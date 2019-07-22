@@ -1,0 +1,33 @@
+body {
+    background-color: $lightGray;
+    -webkit-font-smoothing: antialiased;
+    color: $black;
+}
+
+#root {
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    width: 100%;
+    display: block;
+}
+
+.wrapper {
+    max-width: 1920px;
+    margin:  0 auto;
+    position: relative;
+}
+
+.main {
+    min-height: 100vh;
+    height: 100%;
+    @include maxVW($maxvw) {
+        padding: 0 indent80($maxvw);
+    }
+
+
+}

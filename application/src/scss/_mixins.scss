@@ -1,0 +1,83 @@
+@mixin svg-icon($url) {
+    -webkit-mask-image: url($url);
+    mask-image: url($url);
+    @content;
+}
+
+@mixin mq($point, $q1: min, $q2: width, $q3: null, $q3_point: '', $q3_size: max) {
+    @if ($q3) {
+        @media screen and (#{$q1}-#{$q2}: #{$point}), screen and (#{$q3_size}-#{$q3}: #{$q3_point}) {
+            @content;
+        }
+    } @else {
+        @media screen and (#{$q1}-#{$q2}: #{$point}) {
+            @content;
+        }
+    }
+}
+
+@mixin xs {
+    @include mq($app-xs + 1px){
+        @content;
+    }
+}
+
+@mixin sm {
+    @include mq($app-sm + 1px) {
+        @content;
+    }
+}
+
+@mixin md {
+    @include mq($app-md + 1px){
+        @content;
+    }
+}
+
+@mixin lg {
+    @include mq($app-lg + 1px){
+        @content;
+    }
+}
+
+@mixin xlg {
+    @include mq($app-xlg + 1px){
+        @content;
+    }
+}
+
+@mixin xxlg {
+    @include mq($app-xxlg + 1px){
+        @content;
+    }
+}
+
+@mixin xxs-max {
+    @include mq($app-xxs, max){
+        @content;
+    }
+}
+
+@mixin xs-max {
+    @include mq($app-xs, max){
+        @content;
+    }
+}
+
+@mixin sm-max {
+    @include mq($app-sm, max){
+        @content;
+    }
+}
+
+@mixin md-max {
+    @include mq($app-md, max){
+        @content;
+    }
+}
+
+@mixin lg-max {
+    @include mq($app-lg, max){
+        @content;
+    }
+}

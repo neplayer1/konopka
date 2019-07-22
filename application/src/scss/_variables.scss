@@ -1,0 +1,59 @@
+$headerHeight_LG: 178px;
+$headerHeight_SM: 98px;
+
+$maxvw: 100vw;
+
+@mixin maxVW($maxvw) {
+    @content;
+    @include mq(1920px) {
+        $maxvw: 1920px !global;
+        @content;
+    }
+    $maxvw: 100vw !global;
+}
+
+@function indent10($maxvw) {
+    @return calc(#{$maxvw} * 10 / 1920);
+}
+
+@function indent20($maxvw) {
+    @return calc(#{$maxvw} * 20 / 1920);
+}
+
+@function indent40($maxvw) {
+    @return calc(#{$maxvw} * 40 / 1920);
+}
+
+@function indent80($maxvw) {
+    @return calc(#{$maxvw} * 80 / 1920);
+}
+
+@function gridCol1920($maxvw) {
+    @return calc((#{$maxvw} - (#{indent80($maxvw)} * 2)) * 110 / 1760);
+}
+
+@function gridGap1920($maxvw) {
+    @return calc((#{$maxvw} - (#{indent80($maxvw)} * 2)) * 40 / 1760);
+}
+
+@function main_Hor_Indent($maxvw) {
+    @return indent80($maxvw);
+}
+
+@function catalogImagesIndent($maxvw) {
+    @return indent40($maxvw);
+}
+
+$footerHeight_LG: 400px;
+$footerHeight_SM: 290px;
+$footer_LEFT_indent_LG: 230px;
+
+$arrow: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTQiIGhlaWdodD0iMjUiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yLjcxNyAxMi41OTJMMTQgMjMuNjA1IDEyLjU2NiAyNSAuMDIgMTIuNTkyIDEyLjYwNi4xOTIgMTQgMS42MjQgMi43MTcgMTIuNTkyeiIgZmlsbD0iIzE2MTcxRiIvPjwvc3ZnPg==';
+
+$app-xxlg:                          1600px;
+$app-xlg:                           1440px;
+$app-lg:                            1280px;
+$app-md:                            1024px;
+$app-sm:                            768px;
+$app-xs:                            480px;
+$app-xxs:                           320px;

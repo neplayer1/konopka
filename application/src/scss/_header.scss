@@ -1,0 +1,162 @@
+@include maxVW($maxvw) {
+    .header {
+        height: $headerHeight_LG;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 main_Hor_Indent($maxvw) 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        z-index: 1;
+        background-color: $lightGray;
+        box-sizing: border-box;
+
+        @include md-max() {
+            height: $headerHeight_SM;
+        }
+    }
+}
+
+.header__logo {
+    font-family: $Monserrat;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 30px;
+    text-transform: uppercase;
+    color: $black;
+    transition: color 0.1s ease-in-out;
+
+    span {
+        font-weight: 500;
+    }
+
+    &:hover {
+        color: $darkGray;
+    }
+
+    @include md-max() {
+        font-size: 18px;
+        line-height: 30px;
+    }
+}
+
+.header__nav {
+    @include md-max() {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: $lightGray;
+        display: none;
+
+        .header_nav__link {
+            font-size: 30px;
+            line-height: 38px;
+
+            ~ .header_nav__link {
+                margin-left: 0;
+                margin-top: 40px;
+            }
+        }
+        &.open {
+            display: flex;
+        }
+    }
+}
+
+.header_nav__link {
+    font-family: $PTRootUIReg;
+    font-size: 18px;
+    line-height: 25px;
+    color: $black;
+    font-weight: normal;
+    display: inline-flex;
+    cursor: pointer;
+    transition: color 0.1s ease-in-out;
+
+    &:hover {
+        text-decoration: underline;
+        color: $darkGray;
+    }
+    &:active {
+        color: $black;
+    }
+
+    ~ .header_nav__link {
+        margin-left: 40px;
+    }
+}
+
+.header_nav__link--button {
+    text-transform: uppercase;
+}
+
+.header__hamburger {
+    @include md() {
+        display: none;
+    }
+}
+
+.header__hamburger {
+    width: 24px;
+    height: 14px;
+    transform: rotate(0deg);
+    transition: .5s ease-in-out;
+    cursor: pointer;
+    z-index: 1;
+    margin-right: 12px;
+    margin-top: -3px;
+
+    @include sm-max() {
+        position: static;
+    }
+    span {
+        display: block;
+        position: absolute;
+        height: 2px;
+        width: 100%;
+        background: rgba(0,0,0,0.8);
+        border-radius: 1px;
+        opacity: 1;
+        left: 0;
+        transform: rotate(0deg);
+        transition: .25s ease-in-out;
+
+        &:nth-child(1) {
+            top: 0;
+            transform-origin: left center;
+        }
+        &:nth-child(2) {
+            top: 6px;
+            transform-origin: left center;
+        }
+        &:nth-child(3) {
+            top: 12px;
+            transform-origin: left center;
+        }
+    }
+    &.open {
+        span {
+            &:nth-child(1) {
+                transform: rotate(45deg);
+                top: 0px;
+                left: 1px;
+            }
+            &:nth-child(2) {
+                width: 0%;
+                opacity: 0;
+            }
+            &:nth-child(3) {
+                transform: rotate(-45deg);
+                top: 17px;
+                left: 1px;
+            }
+        }
+    }
+}
