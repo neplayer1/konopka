@@ -1,4 +1,9 @@
 .index-page {
+    margin-top: -$headerHeight_LG;
+
+    @include md-max() {
+        margin-top: $headerHeight_SM;
+    }
     canvas {
         position: absolute;
         left: 0;

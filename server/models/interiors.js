@@ -5,7 +5,9 @@ const interiorSchema = new Schema({
   name: String,
   type: String,
   year: Number,
-  description: String
+  description: String,
+  previewUrl: String,
+  picturesUrl: [{ type: String }]
 });
 
 module.exports = mongoose.model('Interiors', interiorSchema, 'interiors');

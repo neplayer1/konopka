@@ -1,7 +1,7 @@
 import {match} from "react-router";
 import {TInteriorMatch} from "../utils/routes";
 import {graphql} from "react-apollo";
-import { gql } from 'apollo-boost';
+import gql from "graphql-tag";
 
 export const interiorsQuery = gql`
   query interiorsQuery {
@@ -10,7 +10,9 @@ export const interiorsQuery = gql`
       name,
       type,
       year,
-      description
+      description,
+      previewUrl,
+      picturesUrl,
     }
   }
   `;
@@ -22,7 +24,9 @@ const interiorByIdQuery = gql`
       name,
       type,
       year,
-      description
+      description,
+      previewUrl,
+      picturesUrl,
     }
   }
   `;
@@ -34,7 +38,9 @@ const interiorPreviousQuery = gql`
       name,
       type,
       year,
-      description
+      description,
+      previewUrl,
+      picturesUrl,
     }
   }
   `;
@@ -46,7 +52,9 @@ const interiorNextQuery = gql`
       name,
       type,
       year,
-      description
+      description,
+      previewUrl,
+      picturesUrl,
     }
   }
   `;
@@ -57,6 +65,8 @@ export type TInterior = {
     type: string;
     year: string;
     description: string;
+    previewUrl: string;
+    picturesUrl: string[];
 };
 
 type TResponse = {

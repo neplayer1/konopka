@@ -14,14 +14,7 @@
 
         @include xs-max() {
             align-items: normal;
-            margin-top: $headerHeight_SM;
             width: calc(#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2);
-        }
-        @include md-max() {
-            margin-top: $headerHeight_SM;
-        }
-        @include md() {
-            margin-top: $headerHeight_LG;
         }
         @include lg() {
             margin-top: 0;

@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import sample from 'images/sample.jpg';
 import { Link } from 'react-router-dom';
 
 type TProps = {
@@ -8,8 +7,10 @@ type TProps = {
   imageSrc?: string;
 };
 
-export const CatalogPageImage: FC<TProps> = ({label, url, imageSrc}) => (
-  <Link to={url} data-text={label}>
-    <img src={sample} alt=""/>
-  </Link>
-);
+export const CatalogPageImage: FC<TProps> = ({label, url, imageSrc}) => {
+    return (
+        <Link to={url} data-text={label}>
+            <img src={`http://localhost:3005/images/${imageSrc}`} alt=""/>
+        </Link>
+    );
+}

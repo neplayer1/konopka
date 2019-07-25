@@ -1,12 +1,12 @@
-import React, { FC, useCallback, useState, useEffect, useRef } from 'react';
-import { HeaderNavLink } from 'contaiters/Header/styled/HeaderNavLink';
-import { HeaderNavButton } from 'contaiters/Header/styled/HeaderNavButton';
-import { Link } from 'react-router-dom';
-import { routes } from 'utils/routes';
-import { useIntlDictionary } from 'hooks/useDictionary';
-import { useHandleChangeLang } from 'hooks/useHandleChangeLang';
-import { CSSTransition } from 'react-transition-group';
-import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
+import React, {FC, useCallback, useState, useEffect, useRef} from 'react';
+import {HeaderNavLink} from 'contaiters/Header/styled/HeaderNavLink';
+import {HeaderNavButton} from 'contaiters/Header/styled/HeaderNavButton';
+import {Link} from 'react-router-dom';
+import {routes} from 'utils/routes';
+import {useIntlDictionary} from 'hooks/useDictionary';
+import {useHandleChangeLang} from 'hooks/useHandleChangeLang';
+import {CSSTransition} from 'react-transition-group';
+import {disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks} from 'body-scroll-lock';
 
 export const Header: FC = () => {
   const dictionary = useIntlDictionary();
@@ -17,11 +17,11 @@ export const Header: FC = () => {
   const headerNode = header.current;
 
   const handleOpenMenu = useCallback(() => {
-      setOpened(!opened);
+    setOpened(!opened);
   }, [opened]);
 
   const handleCloseMenu = useCallback(() => {
-      setOpened(false);
+    setOpened(false);
   }, []);
 
   useEffect(() => {
@@ -39,17 +39,19 @@ export const Header: FC = () => {
 
   return (
     <header className="header" ref={header}>
-      <Link to={'/'} className="header__logo">Irina <span>Konopka</span></Link>
-      <CSSTransition in={opened} classNames="fade-out" timeout={200}>
-        <nav className={`header__nav ${cls}`}>
-          <HeaderNavLink onClick={handleCloseMenu} url={routes.interiors({})} label={nav.interiors}/>
-          <HeaderNavLink onClick={handleCloseMenu} url={routes.furniture({})} label={nav.furniture}/>
-          <HeaderNavLink onClick={handleCloseMenu} url={routes.about()} label={nav.about}/>
-          <HeaderNavLink onClick={handleCloseMenu} url={routes.contacts()} label={nav.contacts}/>
-          <HeaderNavButton onClick={handleChangeLang} label={changeLangLabel}/>
-        </nav>
-      </CSSTransition>
-      <div onClick={handleOpenMenu} className={`header__hamburger ${cls}`}><span/><span/><span/></div>
+      <div className="wrapper">
+        <Link to={'/'} className="header__logo">Irina <span>Konopka</span></Link>
+        <CSSTransition in={opened} classNames="fade-out" timeout={200}>
+          <nav className={`header__nav ${cls}`}>
+            <HeaderNavLink onClick={handleCloseMenu} url={routes.interiors({})} label={nav.interiors}/>
+            <HeaderNavLink onClick={handleCloseMenu} url={routes.furniture({})} label={nav.furniture}/>
+            <HeaderNavLink onClick={handleCloseMenu} url={routes.about()} label={nav.about}/>
+            <HeaderNavLink onClick={handleCloseMenu} url={routes.contacts()} label={nav.contacts}/>
+            <HeaderNavButton onClick={handleChangeLang} label={changeLangLabel}/>
+          </nav>
+        </CSSTransition>
+        <div onClick={handleOpenMenu} className={`header__hamburger ${cls}`}><span/><span/><span/></div>
+      </div>
     </header>
   );
 }

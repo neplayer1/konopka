@@ -1,6 +1,6 @@
 import {match} from "react-router";
 import {graphql} from "react-apollo";
-import { gql } from 'apollo-boost';
+import gql from "graphql-tag";
 import {TFurnitureMatch} from "../utils/routes";
 import {TInterior} from "./interiors";
 
@@ -58,6 +58,8 @@ export type TFurniture = {
     type: string;
     year: string;
     description: string;
+    previewUrl: string;
+    picturesUrl: string[];
 };
 
 type TResponse = {

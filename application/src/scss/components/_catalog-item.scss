@@ -5,6 +5,7 @@
         @include md() {
             display: flex;
         }
+        margin-bottom: #{main_Hor_Indent($maxvw)};
     }
 
     .catalog-item__left {
@@ -25,7 +26,7 @@
             position: sticky;
             top: 30px;
             width: calc((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2) / 12 * 4);
-            padding-bottom: calc(48px + #{catalogImagesIndent($maxvw)});
+            //padding-bottom: calc(48px + #{catalogImagesIndent($maxvw)});
         }
         @include xxlg() {
             top: 50px;

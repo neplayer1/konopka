@@ -1,19 +1,24 @@
 @include maxVW($maxvw) {
     .header {
         height: $headerHeight_LG;
+        background-color: $lightGray;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        padding: 0 main_Hor_Indent($maxvw) 0;
-        position: absolute;
-        top: 0;
-        width: 100%;
-        z-index: 1;
-        background-color: $lightGray;
-        box-sizing: border-box;
 
         @include md-max() {
             height: $headerHeight_SM;
+        }
+
+        .wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 main_Hor_Indent($maxvw) 0;
+            position: relative;
+            top: 0;
+            width: 100%;
+            z-index: 1;
+            box-sizing: border-box;
         }
     }
 }

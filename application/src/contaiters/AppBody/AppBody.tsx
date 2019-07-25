@@ -8,8 +8,9 @@ import FurniturePage from 'contaiters/FurniturePage/FurniturePage';
 import {AboutPage} from 'contaiters/AboutPage/AboutPage';
 import InteriorsPageItem from "../InteriorsPageItem/InteriorsPageItem";
 import FurniturePageItem from "../FurniturePageItem/FurniturePageItem";
+import AdminPage from "../AdminPage/AdminPage";
 
-export const Body: FC = () => (
+export const AppBody: FC = () => (
     <div className="main">
         <Switch>
             <Route path="/" exact component={IndexPage}/>
@@ -19,6 +20,7 @@ export const Body: FC = () => (
             <Route path={routes.furniturePattern()} exact component={FurniturePageItem}/>
             <Route path={routes.about()} exact component={AboutPage}/>
             <Route path={routes.contacts()} exact component={ContactsPage}/>
+            <Route path={routes.admin()} exact component={AdminPage}/>
         </Switch>
     </div>
 );

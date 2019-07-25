@@ -6,32 +6,29 @@ import {interiorById, nextInteriorById, prevInteriorById, TInterior} from "queri
 import {History} from "history";
 
 type TProps = {
-    history: History;
-    current: TInterior;
-    prev: TInterior;
-    next: TInterior;
+  history: History;
+  current: TInterior;
+  prev: TInterior;
+  next: TInterior;
 }
 
 const InteriorsPageItem: FC<TProps> = (props) => {
-    console.log(props)
-    const {history, current, prev, next} = props;
+  console.log('InteriorsPageItem render', props);
+  const {history, current, prev, next} = props;
 
-    const handlePrevItem = useCallback(() => {
-        if (prev) {
-            history.push(routes.interiors({id: prev._id}));
-        }
-    }, [history, prev]);
+  const loaded = !!current && prev !== undefined && next !== undefined;
 
-    const handleNextItem = useCallback(() => {
-        if (next) {
-            history.push(routes.interiors({id: next._id}));
-        }
-    }, [history, next]);
+  const handlePrevItem = useCallback(() => {
+    history.push(routes.interiors({id: prev._id}));
+  }, [history, prev]);
 
-    return (
-        <CatalogPageItem currentItem={current} prevItem={prev} nextItem={next} handlePrevItem={handlePrevItem} handleNextItem={handleNextItem}/>
-    );
+  const handleNextItem = useCallback(() => {
+    history.push(routes.interiors({id: next._id}));
+  }, [history, next]);
+
+  return <>
+    {loaded && <CatalogPageItem currentItem={current} prevItem={prev} nextItem={next} handlePrevItem={handlePrevItem} handleNextItem={handleNextItem}/>}
+  </>
 }
-
 
 export default compose(interiorById, prevInteriorById, nextInteriorById)(InteriorsPageItem);

@@ -3,11 +3,6 @@
     @include maxVW($maxvw) {
         margin-bottom: #{main_Hor_Indent($maxvw)};
     }
-    padding-top: $headerHeight_LG;
-
-    @include md-max() {
-        padding-top: $headerHeight_SM;
-    }
 }
 
 .catalog {

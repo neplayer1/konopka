@@ -1,27 +1,35 @@
 import React from 'react';
 import {Header} from 'contaiters/Header/Header';
 import {Footer} from 'contaiters/Footer/Footer';
-import {Body} from 'contaiters/Body/Body';
+import {AppBody} from 'contaiters/AppBody/AppBody';
 import {IntlProvider} from 'hoc/hocIntlProvider';
-import ApolloClient from 'apollo-boost';
+import ApolloClient from 'apollo-client';
 import ApolloProvider from "react-apollo/ApolloProvider";
+import {InMemoryCache} from "apollo-cache-inmemory";
+
+const {createUploadLink} = require('apollo-upload-client')
+
+const link = createUploadLink({
+  uri: `http://localhost:3005/api`,
+});
 
 const client = new ApolloClient({
-    uri: `http://localhost:3005/api`
+  link,
+  cache: new InMemoryCache()
 });
 
 const App: React.FC = () => {
-    return (
-        <ApolloProvider client={client}>
-            <IntlProvider>
-                <div className="wrapper">
-                    <Header/>
-                    <Body/>
-                    <Footer/>
-                </div>
-            </IntlProvider>
-        </ApolloProvider>
-    );
+  return (
+    <ApolloProvider client={client}>
+      <IntlProvider>
+        <Header/>
+        <div className="wrapper">
+          <AppBody/>
+        </div>
+        <Footer/>
+      </IntlProvider>
+    </ApolloProvider>
+  );
 }
 
 export default App;

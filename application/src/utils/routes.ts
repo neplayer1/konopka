@@ -32,4 +32,7 @@ export const routes = {
   about() {
     return '/about';
   },
+  admin() {
+    return '/admin';
+  },
 };

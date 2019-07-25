@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { useIntlDictionary } from 'hooks/useDictionary';
+import React, {FC} from 'react';
+import {useIntlDictionary} from 'hooks/useDictionary';
 
 export const Footer: FC = () => {
   const i18n = useIntlDictionary();
@@ -7,7 +7,7 @@ export const Footer: FC = () => {
 
   return (
     <footer className="footer">
-      <div className="footer__link">
+      <div className="wrapper">
         <div className="footer__title">{writeMe.left} <span>{writeMe.right}</span></div>
         <nav className="footer__links">
           <a href="mailto:irina.id@gmail.com" className="footer_links__item">irina.id@gmail.com</a>
