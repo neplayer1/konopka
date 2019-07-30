@@ -1,44 +1,21 @@
 import React, {FC} from 'react';
 import {useMemo} from "react";
-import {TFurnitureParams, TInteriorsParams} from "../../utils/routes";
+import {TFurnitureParams, TInteriorsParams} from "utils/routes";
 import {CatalogPageImage} from "./styled/CatalogPageImage";
-import {TInterior} from "../../queries/interiors";
-import {TFurniture} from "../../queries/furniture";
+import {useCurrentLang} from "hooks/useCurrentLang";
+import {TInterior} from "types/common";
 
 type TProps = {
-  chunkChunkImages: any;
+  data: TInterior[];
   baseUrl: ({id}: TInteriorsParams | TFurnitureParams) => string;
 }
-export const CatalogPage: FC<TProps> = ({chunkChunkImages, baseUrl}) => {
+export const CatalogPage: FC<TProps> = ({data, baseUrl}) => {
+  const isRu = useCurrentLang();
   const catalog = useMemo(() => {
-    return chunkChunkImages.map((chunk: TInterior[], i: number) => {
-      return (
-        <div key={i}>
-          {
-            chunk.map((chunkInterior: TInterior | TFurniture, j: number) => {
-              if (Array.isArray(chunkInterior)) {
-                return (
-                  <div key={chunkInterior[j]._id}>
-                    {
-                      chunkInterior.map((interior: TInterior | TFurniture) => {
-                        return (
-                          <CatalogPageImage key={interior._id} label={interior.name} url={baseUrl({id: interior._id})} imageSrc={interior.previewUrl}/>
-                        )
-                      })
-                    }
-                  </div>
-                )
-              } else {
-                return (
-                  <CatalogPageImage key={chunkInterior._id} label={chunkInterior.name} url={baseUrl({id: chunkInterior._id})} imageSrc={chunkInterior.previewUrl}/>
-                )
-              }
-            })
-          }
-        </div>
-      );
+    return data.map((item: TInterior) => {
+      return <CatalogPageImage key={item._id} label={isRu ? item.nameRu : item.nameEn} url={baseUrl({id: item._id})} imageSrc={item.previewUrl}/>
     });
-  }, [baseUrl, chunkChunkImages]);
+  }, [baseUrl, data, isRu]);
 
   return (
     <div className="catalog">

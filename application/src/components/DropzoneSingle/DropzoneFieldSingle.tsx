@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useMemo} from 'react';
 import {DropzoneRootProps} from "react-dropzone";
 
 interface UserFile extends File {
@@ -11,27 +11,25 @@ type TProps = {
   getInputProps: (props?: DropzoneRootProps) => DropzoneRootProps;
 }
 
-export const DropzoneFieldSingle:FC<TProps> = ({acceptedFiles, getRootProps, getInputProps}) => {
+export const DropzoneFieldSingle: FC<TProps> = ({acceptedFiles, getRootProps, getInputProps}) => {
 
-    const files = acceptedFiles.map((file: File) => {
-        console.log(file.name)
-        return (
-            <li key={file.name}>
-                {file.name} - {file.size} bytes
-            </li>
-        )
-    });
+  const thumbs = useMemo(() => {
+    return acceptedFiles.map(file => (
+      <div className="dropzone_preview__item" key={file.name}>
+        <img src={file.preview} alt={''}/>
+      </div>
+    ));
+  }, [acceptedFiles]);
 
-    return (
-        <section className="container">
-            <div {...getRootProps({className: 'dropzone'})}>
-                <input {...getInputProps()} />
-                <p>Drag 'n' drop some files here, or click to select files</p>
-            </div>
-            <aside>
-                <h4>Files</h4>
-                <ul>{files}</ul>
-            </aside>
-        </section>
-    );
+  return (
+    <section className="form-control form-control__dropzone">
+      <div {...getRootProps({className: 'dropzone'})}>
+        <input {...getInputProps()} />
+        <div>Add preview</div>
+      </div>
+      <div className="dropzone__preview">
+        {thumbs}
+      </div>
+    </section>
+  );
 }

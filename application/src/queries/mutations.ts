@@ -1,12 +1,16 @@
 import gql from "graphql-tag";
 
 export const addInteriorMutation = gql`
-  mutation addInterior($name: String, $type: String, $year: Int, $description: String, $preview: Upload!, $images: Upload!) {
-    addInterior(name: $name, type: $type, year: $year, description: $description, preview: $preview, images: $images) {
-      name,
-      type,
-      year,
-      description,
+  mutation addInterior($nameRu: String!, $typeRu: String!, $yearRu: String!, $descriptionRu: String!, $nameEn: String!, $typeEn: String!, $yearEn: String!, $descriptionEn: String!, $preview: Upload!, $images: Upload!) {
+    addInterior(nameRu: $nameRu, typeRu: $typeRu, yearRu: $yearRu, descriptionRu: $descriptionRu, nameEn: $nameEn, typeEn: $typeEn, yearEn: $yearEn, descriptionEn: $descriptionEn, preview: $preview, images: $images) {
+      nameRu,
+      typeRu,
+      yearRu,
+      descriptionRu,
+      nameEn,
+      typeEn,
+      yearEn,
+      descriptionEn,
       preview,
       images
     }

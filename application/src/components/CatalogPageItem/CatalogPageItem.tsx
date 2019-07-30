@@ -1,9 +1,9 @@
 import React, {FC, useMemo} from 'react';
 import { routes } from 'utils/routes';
 import { Link } from 'react-router-dom';
-import {TInterior} from "../../queries/interiors";
-import {TFurniture} from "../../queries/furniture";
-import {isHidden} from "../../utils/common";
+import {isHidden} from "utils/common";
+import {useCurrentLang} from "hooks/useCurrentLang";
+import {TFurniture, TInterior} from "types/common";
 
 type TCatalogItem = {
   currentItem: TInterior | TFurniture;
@@ -14,7 +14,15 @@ type TCatalogItem = {
 }
 
 export const CatalogPageItem: FC<TCatalogItem> = ({currentItem, prevItem, nextItem, handlePrevItem, handleNextItem}) => {
-  const {name, type, year, description, picturesUrl} = currentItem;
+  const {nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, picturesUrl} = currentItem;
+
+  const isRu = useCurrentLang();
+  const name = isRu ? nameRu : nameEn;
+  const type = isRu ? typeRu : typeEn;
+  const year = isRu ? yearRu : yearEn;
+  const description = isRu ? descriptionRu : descriptionEn;
+  const prevItemName = prevItem && (isRu ? prevItem.nameRu : prevItem.nameEn);
+  const nextItemName = nextItem && (isRu ? nextItem.nameRu : nextItem.nameEn);
 
   const catalogImages = useMemo(() => {
     return picturesUrl.map((url) => (
@@ -39,8 +47,8 @@ export const CatalogPageItem: FC<TCatalogItem> = ({currentItem, prevItem, nextIt
       <div className="catalog-item__right">
         <div className="catalog-item_right__inner">
           <div className="catalog-item__navigation">
-            <div className="catalog-item_navigation-item catalog-item_navigation-item--left" style={isHidden(!!prevItem)} onClick={handlePrevItem}><span/>{prevItem ? prevItem.name : name}</div>
-            <div className="catalog-item_navigation-item catalog-item_navigation-item--right" style={isHidden(!!nextItem)} onClick={handleNextItem}>{nextItem ? nextItem.name : name}<span/></div>
+            <div className="catalog-item_navigation-item catalog-item_navigation-item--left" style={isHidden(!!prevItem)} onClick={handlePrevItem}><span/>{prevItem ? prevItemName : name}</div>
+            <div className="catalog-item_navigation-item catalog-item_navigation-item--right" style={isHidden(!!nextItem)} onClick={handleNextItem}>{nextItem ? nextItemName : name}<span/></div>
           </div>
         </div>
       </div>

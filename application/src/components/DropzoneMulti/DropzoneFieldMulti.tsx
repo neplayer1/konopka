@@ -1,4 +1,4 @@
-import React, {FC, useEffect} from 'react';
+import React, {FC, useEffect, useMemo} from 'react';
 import {DropzoneRootProps} from 'react-dropzone';
 
 
@@ -13,29 +13,28 @@ type TProps = {
 }
 
 export const DropzoneFieldMulti:FC<TProps> = ({acceptedFiles, getRootProps, getInputProps}) => {
-
-    const thumbs = acceptedFiles.map(file => (
-        <div  key={file.name}>
-            <div>
-                <img src={file.preview} alt={''}/>
-            </div>
+    const thumbs = useMemo(() => {
+      return acceptedFiles.map(file => (
+        <div className="dropzone_preview__item" key={file.name}>
+          <img src={file.preview} alt={''}/>
         </div>
-    ));
+      ));
+    }, [acceptedFiles]);
+
     useEffect(() => () => {
         // Make sure to revoke the data uris to avoid memory leaks
       acceptedFiles.forEach(file => URL.revokeObjectURL(file.preview));
     }, [acceptedFiles]);
 
     return (
-        <section className="container">
+        <section className="form-control form-control__dropzone">
             <div {...getRootProps({className: 'dropzone'})}>
                 <input {...getInputProps()} />
-                <p>Drag 'n' drop some files here, or click to select files</p>
-                <em>Only images will be accepted</em>
+                <div>Add images</div>
             </div>
-            <aside>
+            <div className="dropzone__preview">
                 {thumbs}
-            </aside>
+            </div>
         </section>
     );
 }

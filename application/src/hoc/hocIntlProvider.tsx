@@ -23,7 +23,9 @@ export const IntlProvider: React.FC = ({children}) => {
     }
   }, [lang]);
 
-  const value = {intl, handleChangeLang};
+  const isRu = lang === 'ru';
+
+  const value = {isRu, intl, handleChangeLang};
 
   return (
     <IntlContext.Provider value={value}>

@@ -1,5 +1,6 @@
 .index-page {
     margin-top: -$headerHeight_LG;
+    min-height: 100vh;
 
     @include md-max() {
         margin-top: $headerHeight_SM;

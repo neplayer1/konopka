@@ -1,17 +1,21 @@
 import {match} from "react-router";
 import {graphql} from "react-apollo";
 import gql from "graphql-tag";
-import {TFurnitureMatch} from "../utils/routes";
-import {TInterior} from "./interiors";
+import {TFurnitureMatch} from "utils/routes";
+import {TFurniture} from "types/common";
 
 const furnitureQuery = gql`
   query furnitureQuery {
     furniture {
       _id,
-      name,
-      type,
-      year,
-      description
+      nameRu,
+      typeRu,
+      yearRu,
+      descriptionRu,
+      nameEn,
+      typeEn,
+      yearEn,
+      descriptionEn,
     }
   }
   `;
@@ -20,10 +24,14 @@ const furnitureByIdQuery = gql`
   query furnitureByIdQuery($_id: ObjectId) {
     furnitureById(_id: $_id) {
       _id,
-      name,
-      type,
-      year,
-      description
+      nameRu,
+      typeRu,
+      yearRu,
+      descriptionRu,
+      nameEn,
+      typeEn,
+      yearEn,
+      descriptionEn,
     }
   }
   `;
@@ -32,10 +40,14 @@ const furniturePreviousQuery = gql`
   query furniturePreviousQuery($_id: ObjectId) {
     furniturePrevious(_id: $_id) {
       _id,
-      name,
-      type,
-      year,
-      description
+      nameRu,
+      typeRu,
+      yearRu,
+      descriptionRu,
+      nameEn,
+      typeEn,
+      yearEn,
+      descriptionEn,
     }
   }
   `;
@@ -44,23 +56,17 @@ const furnitureNextQuery = gql`
   query furnitureNextQuery($_id: ObjectId) {
     furnitureNext(_id: $_id) {
       _id,
-      name,
-      type,
-      year,
-      description
+      nameRu,
+      typeRu,
+      yearRu,
+      descriptionRu,
+      nameEn,
+      typeEn,
+      yearEn,
+      descriptionEn,
     }
   }
   `;
-
-export type TFurniture = {
-    _id: string;
-    name: string;
-    type: string;
-    year: string;
-    description: string;
-    previewUrl: string;
-    picturesUrl: string[];
-};
 
 type TResponse = {
     furnitureById: TFurniture;
@@ -123,11 +129,11 @@ const nextFurnitureById = graphql<TInputProps, TNextResponse, TVariables, TNextC
 
 
 type TAllResponse = {
-    furniture: TInterior;
+    furniture: TFurniture;
 }
 
 interface TAllChildProps {
-    allFurniture?: TInterior
+    allFurniture?: TFurniture
 }
 
 const allFurniture = graphql<TInputProps, TAllResponse, TVariables, TAllChildProps>(furnitureQuery, {

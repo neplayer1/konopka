@@ -2,19 +2,18 @@ import React, {FC, useCallback} from 'react';
 import {routes} from 'utils/routes';
 import {CatalogPageItem} from "components/CatalogPageItem/CatalogPageItem";
 import {History} from "history";
-import {TInterior} from "queries/interiors";
 import {compose} from "react-apollo";
 import {furnitureById, nextFurnitureById, prevFurnitureById} from "queries/furniture";
+import {TFurniture} from "types/common";
 
 type TProps = {
     history: History;
-    current: TInterior;
-    prev: TInterior;
-    next: TInterior;
+    current: TFurniture;
+    prev: TFurniture;
+    next: TFurniture;
 }
 
 const FurniturePageItem: FC<TProps> = (props) => {
-    console.log(props)
     const {history, current, prev, next} = props;
 
     const handlePrevItem = useCallback(() => {

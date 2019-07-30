@@ -30,6 +30,6 @@ const App: React.FC = () => {
       </IntlProvider>
     </ApolloProvider>
   );
-}
+};
 
 export default App;

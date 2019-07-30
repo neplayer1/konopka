@@ -3,13 +3,24 @@
     @include maxVW($maxvw) {
         margin-bottom: #{main_Hor_Indent($maxvw)};
     }
+    @include clearfix;
 }
 
 .catalog {
     a {
         display: block;
-        position: relative;
-        background-color: $black;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
 
         &:before {
             content: "";
@@ -41,134 +52,113 @@
         }
     }
 
-    img {
-        display: block;
-        width: 100%;
-    }
-
-    > div:nth-child(1) {
+    > div:nth-child(1),
+    > div:nth-child(2) {
         margin-top: 0 !important;
     }
+
     @include maxVW($maxvw) {
-        @include xs-max() {
-            > div:nth-child(3n + 1) {
-                margin-top: #{catalogImagesIndent($maxvw)};
-
-                > a {
-                    margin-top: #{catalogImagesIndent($maxvw)};
-                }
-
-                > div {
-                    margin-top: #{catalogImagesIndent($maxvw)};
-
-                    a:nth-child(1) {
-                        margin-top: #{catalogImagesIndent($maxvw)};
-                    }
-
-                    a:nth-child(2) {
-                        margin-top: #{catalogImagesIndent($maxvw)};
-                    }
-                }
-            }
-
-            > div:nth-child(3n + 2) {
-                margin-top: #{catalogImagesIndent($maxvw)};
-
-                > div {
-                    a:nth-child(1) {
-                        margin-top: #{catalogImagesIndent($maxvw)};
-                    }
-
-                    a:nth-child(2) {
-                        margin-top: #{catalogImagesIndent($maxvw)};
-                    }
-                }
-
-                > a {
-                    margin-top: #{catalogImagesIndent($maxvw)};
-                }
-            }
-
-            > div:nth-child(3n + 3) {
-                margin-top: #{catalogImagesIndent($maxvw)};
-
-                > a {
-                    margin-top: #{catalogImagesIndent($maxvw)};
-
-                    ~ a {
-                        margin-top: #{catalogImagesIndent($maxvw)};
-                    }
-                }
-            }
-
-            > div {
-                > a:only-child {
-                    width: 100%;
-                }
-            }
-        }
         @include xs() {
-            > div:nth-child(3n + 1) {
-                display: flex;
+            div {
+                position: relative;
+            }
+            div:nth-child(8n + 1) {
+                float: left;
                 margin-top: #{catalogImagesIndent($maxvw)};
+                width: calc((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - ((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - #{catalogImagesIndent($maxvw)} - #{catalogImagesIndent($maxvw)}) / 3)) - #{catalogImagesIndent($maxvw)});
                 // 1160/920
-
-                > a {
-                    width: calc((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - ((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - #{catalogImagesIndent($maxvw)} - #{catalogImagesIndent($maxvw)}) / 3)) - #{catalogImagesIndent($maxvw)});
-                }
-
-                > div {
-                    margin-left: #{catalogImagesIndent($maxvw)};
-
-                    a:nth-child(1) {
-                        width: calc(#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - (((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - #{catalogImagesIndent($maxvw)} - #{catalogImagesIndent($maxvw)}) / 3 + #{catalogImagesIndent($maxvw)}) * 2));
-                    }
-
-                    a:nth-child(2) {
-                        width: calc(#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - (((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - #{catalogImagesIndent($maxvw)} - #{catalogImagesIndent($maxvw)}) / 3 + #{catalogImagesIndent($maxvw)}) * 2));
-                        margin-top: #{catalogImagesIndent($maxvw)};
-                    }
+                &:before {
+                    content: '';
+                    display: block;
+                    padding-bottom: calc(100% * 920 / 1160);
                 }
             }
 
-            > div:nth-child(3n + 2) {
-
-                display: flex;
+            div:nth-child(8n + 2) {
+                float: right;
+                width: calc(#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - (((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - #{catalogImagesIndent($maxvw)} - #{catalogImagesIndent($maxvw)}) / 3 + #{catalogImagesIndent($maxvw)}) * 2));
                 margin-top: #{catalogImagesIndent($maxvw)};
-
-                > div {
-                    a:nth-child(1) {
-                        width: calc(#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - (((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - #{catalogImagesIndent($maxvw)} - #{catalogImagesIndent($maxvw)}) / 3 + #{catalogImagesIndent($maxvw)}) * 2));
-                    }
-
-                    a:nth-child(2) {
-                        width: calc(#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - (((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - #{catalogImagesIndent($maxvw)} - #{catalogImagesIndent($maxvw)}) / 3 + #{catalogImagesIndent($maxvw)}) * 2));
-                        margin-top: #{catalogImagesIndent($maxvw)};
-                    }
-                }
-
-                > a {
-                    margin-left: #{catalogImagesIndent($maxvw)};
-                    width: calc((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - ((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - #{catalogImagesIndent($maxvw)} - #{catalogImagesIndent($maxvw)}) / 3)) - #{catalogImagesIndent($maxvw)});
+                margin-left: #{catalogImagesIndent($maxvw)};
+                // 560/440
+                &:before {
+                    content: '';
+                    display: block;
+                    padding-bottom: calc(100% * 440 / 560);
                 }
             }
 
-            > div:nth-child(3n + 3) {
-                display: flex;
+            div:nth-child(8n + 3) {
+                float: right;
                 margin-top: #{catalogImagesIndent($maxvw)};
-
-                > a {
-                    width: calc(#{$maxvw}/2 - #{main_Hor_Indent($maxvw)} - #{catalogImagesIndent($maxvw)} / 2);
-
-                    ~ a {
-                        margin-left: #{catalogImagesIndent($maxvw)};
-                    }
+                margin-left: #{catalogImagesIndent($maxvw)};
+                width: calc(#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - (((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - #{catalogImagesIndent($maxvw)} - #{catalogImagesIndent($maxvw)}) / 3 + #{catalogImagesIndent($maxvw)}) * 2));
+                // 560/440
+                &:before {
+                    content: '';
+                    display: block;
+                    padding-bottom: calc(100% * 440 / 560);
                 }
             }
 
-            > div {
-                > a:only-child {
-                    width: 100%;
+            div:nth-child(8n + 4) {
+                float: right;
+                width: calc((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - ((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - #{catalogImagesIndent($maxvw)} - #{catalogImagesIndent($maxvw)}) / 3)) - #{catalogImagesIndent($maxvw)});
+                margin-top: #{catalogImagesIndent($maxvw)};
+                margin-left: #{catalogImagesIndent($maxvw)};
+                // 1160/920
+                &:before {
+                    content: '';
+                    display: block;
+                    padding-bottom: calc(100% * 920 / 1160);
+                }
+            }
+
+            div:nth-child(8n + 5) {
+                float: left;
+                width: calc(#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - (((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - #{catalogImagesIndent($maxvw)} - #{catalogImagesIndent($maxvw)}) / 3 + #{catalogImagesIndent($maxvw)}) * 2));
+                margin-top: #{catalogImagesIndent($maxvw)};
+                // 560/440
+                &:before {
+                    content: '';
+                    display: block;
+                    padding-bottom: calc(100% * 440 / 560);
+                }
+            }
+
+            div:nth-child(8n + 6) {
+                float: left;
+                width: calc(#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - (((#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2 - #{catalogImagesIndent($maxvw)} - #{catalogImagesIndent($maxvw)}) / 3 + #{catalogImagesIndent($maxvw)}) * 2));
+                margin-top: #{catalogImagesIndent($maxvw)};
+                // 560/440
+                &:before {
+                    content: '';
+                    display: block;
+                    padding-bottom: calc(100% * 440 / 560);
+                }
+            }
+
+            > div:nth-child(8n + 7) {
+                float: left;
+                width: calc(#{$maxvw}/2 - #{main_Hor_Indent($maxvw)} - #{catalogImagesIndent($maxvw)} / 2);
+                margin-top: #{catalogImagesIndent($maxvw)};
+                // 860/800
+                &:before {
+                    content: '';
+                    display: block;
+                    padding-bottom: calc(100% * 800 / 860);
+                }
+            }
+
+            > div:nth-child(8n + 8) {
+                float: left;
+                width: calc(#{$maxvw}/2 - #{main_Hor_Indent($maxvw)} - #{catalogImagesIndent($maxvw)} / 2);
+                margin-top: #{catalogImagesIndent($maxvw)};
+                margin-left: #{catalogImagesIndent($maxvw)};
+                // 860/800
+                &:before {
+                    content: '';
+                    display: block;
+                    padding-bottom: calc(100% * 800 / 860);
                 }
             }
         }

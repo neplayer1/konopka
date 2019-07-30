@@ -1,16 +1,21 @@
 import {match} from "react-router";
-import {TInteriorMatch} from "../utils/routes";
+import {TInteriorMatch} from "utils/routes";
 import {graphql} from "react-apollo";
 import gql from "graphql-tag";
+import {TInterior} from "types/common";
 
 export const interiorsQuery = gql`
   query interiorsQuery {
     interiors {
       _id,
-      name,
-      type,
-      year,
-      description,
+      nameRu,
+      typeRu,
+      yearRu,
+      descriptionRu,
+      nameEn,
+      typeEn,
+      yearEn,
+      descriptionEn,
       previewUrl,
       picturesUrl,
     }
@@ -21,10 +26,14 @@ const interiorByIdQuery = gql`
   query interiorByIdQuery($_id: ObjectId) {
     interiorById(_id: $_id) {
       _id,
-      name,
-      type,
-      year,
-      description,
+      nameRu,
+      typeRu,
+      yearRu,
+      descriptionRu,
+      nameEn,
+      typeEn,
+      yearEn,
+      descriptionEn,
       previewUrl,
       picturesUrl,
     }
@@ -35,10 +44,14 @@ const interiorPreviousQuery = gql`
   query interiorPreviousQuery($_id: ObjectId) {
     interiorPrevious(_id: $_id) {
       _id,
-      name,
-      type,
-      year,
-      description,
+      nameRu,
+      typeRu,
+      yearRu,
+      descriptionRu,
+      nameEn,
+      typeEn,
+      yearEn,
+      descriptionEn,
       previewUrl,
       picturesUrl,
     }
@@ -49,25 +62,19 @@ const interiorNextQuery = gql`
   query interiorNextQuery($_id: ObjectId) {
     interiorNext(_id: $_id) {
       _id,
-      name,
-      type,
-      year,
-      description,
+      nameRu,
+      typeRu,
+      yearRu,
+      descriptionRu,
+      nameEn,
+      typeEn,
+      yearEn,
+      descriptionEn,
       previewUrl,
       picturesUrl,
     }
   }
   `;
-
-export type TInterior = {
-    _id: string;
-    name: string;
-    type: string;
-    year: string;
-    description: string;
-    previewUrl: string;
-    picturesUrl: string[];
-};
 
 type TResponse = {
     interiorById: TInterior;

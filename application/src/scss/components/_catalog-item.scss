@@ -1,11 +1,16 @@
 @include maxVW($maxvw) {
     .catalog-item {
         width: 100%;
+        min-height: calc(100vh - #{$headerHeight_LG});
+        margin-bottom: #{main_Hor_Indent($maxvw)};
 
+        @include md-max() {
+            min-height: calc(100vh - #{$headerHeight_SM});
+        }
         @include md() {
             display: flex;
         }
-        margin-bottom: #{main_Hor_Indent($maxvw)};
+
     }
 
     .catalog-item__left {

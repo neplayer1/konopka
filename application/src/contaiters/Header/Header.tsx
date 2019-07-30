@@ -9,9 +9,8 @@ import {CSSTransition} from 'react-transition-group';
 import {disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks} from 'body-scroll-lock';
 
 export const Header: FC = () => {
-  const dictionary = useIntlDictionary();
   const handleChangeLang = useHandleChangeLang();
-  const {nav, changeLangLabel} = dictionary;
+  const {nav, changeLangLabel} = useIntlDictionary();
   const [opened, setOpened] = useState(false);
   const header = useRef<HTMLElement>(null);
   const headerNode = header.current;

@@ -81,3 +81,25 @@
         @content;
     }
 }
+
+@mixin placeholder {
+    &::-webkit-input-placeholder {
+        -webkit-font-smoothing: antialiased;
+        @content;
+    }
+    &::-moz-placeholder {
+        -moz-osx-font-smoothing: grayscale;
+        @content;
+    }
+}
+
+@mixin clearfix {
+    &:before,
+    &:after {
+        content: " ";
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
+}

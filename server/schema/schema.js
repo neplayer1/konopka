@@ -45,10 +45,14 @@ const InteriorType = new GraphQLObjectType({
   name: 'Interior',
   fields: () => ({
     _id: { type: GraphQLObjectId },
-    name: { type: GraphQLString },
-    type: { type: GraphQLString },
-    year: { type: GraphQLInt },
-    description: { type: GraphQLString },
+    nameRu: { type: GraphQLString },
+    typeRu: { type: GraphQLString },
+    yearRu: { type: GraphQLString },
+    descriptionRu: { type: GraphQLString },
+    nameEn: { type: GraphQLString },
+    typeEn: { type: GraphQLString },
+    yearEn: { type: GraphQLString },
+    descriptionEn: { type: GraphQLString },
     previewUrl: { type: GraphQLString },
     picturesUrl: {type: new GraphQLList(GraphQLString)}
   })
@@ -58,10 +62,14 @@ const InteriorMutateType = new GraphQLObjectType({
   name: 'InteriorMutate',
   fields: () => ({
     _id: { type: GraphQLObjectId },
-    name: { type: GraphQLString },
-    type: { type: GraphQLString },
-    year: { type: GraphQLInt },
-    description: { type: GraphQLString },
+    nameRu: { type: GraphQLString },
+    typeRu: { type: GraphQLString },
+    yearRu: { type: GraphQLString },
+    descriptionRu: { type: GraphQLString },
+    nameEn: { type: GraphQLString },
+    typeEn: { type: GraphQLString },
+    yearEn: { type: GraphQLString },
+    descriptionEn: { type: GraphQLString },
     preview: { type: GraphQLUpload },
     images: { type: GraphQLUpload }
   })
@@ -71,10 +79,14 @@ const FurnitureType = new GraphQLObjectType({
   name: 'Furniture',
   fields: () => ({
     _id: { type: GraphQLObjectId },
-    name: { type: GraphQLString },
-    type: { type: GraphQLString },
-    year: { type: GraphQLInt },
-    description: { type: GraphQLString },
+    nameRu: { type: GraphQLString },
+    typeRu: { type: GraphQLString },
+    yearRu: { type: GraphQLString },
+    descriptionRu: { type: GraphQLString },
+    nameEn: { type: GraphQLString },
+    typeEn: { type: GraphQLString },
+    yearEn: { type: GraphQLString },
+    descriptionEn: { type: GraphQLString },
   })
 });
 
@@ -84,24 +96,32 @@ const Mutation = new GraphQLObjectType({
     addInterior: {
       type: InteriorMutateType,
       args: {
-        name: { type: GraphQLString },
-        type: { type: GraphQLString },
-        year: { type: GraphQLInt },
-        description: { type: GraphQLString },
+        nameRu: { type: GraphQLString },
+        typeRu: { type: GraphQLString },
+        yearRu: { type: GraphQLString },
+        descriptionRu: { type: GraphQLString },
+        nameEn: { type: GraphQLString },
+        typeEn: { type: GraphQLString },
+        yearEn: { type: GraphQLString },
+        descriptionEn: { type: GraphQLString },
         preview: { type: GraphQLUpload },
         images: { type: GraphQLUpload },
       },
-      async resolve(parent, { name, type, year, description, preview, images }) {
+      async resolve(parent, { nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, preview, images }) {
         console.log("preview", preview)
         console.log("images", images)
         const previewUrl = await processUpload(preview);
         const picturesUrl = await processUpload(images);
 
         const interior = new InteriorsModel({
-          name,
-          type,
-          year,
-          description,
+          nameRu,
+          typeRu,
+          yearRu,
+          descriptionRu,
+          nameEn,
+          typeEn,
+          yearEn,
+          descriptionEn,
           previewUrl,
           picturesUrl
         });
