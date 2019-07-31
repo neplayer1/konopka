@@ -1,7 +1,6 @@
 import React, {FC} from 'react';
 import {Switch, Route} from 'react-router';
 import {routes} from 'utils/routes';
-import {ContactsPage} from 'contaiters/ContactsPage/ContactsPage';
 import {IndexPage} from 'contaiters/IndexPage/IndexPage';
 import InteriorsPage from 'contaiters/InteriorsPage/InteriorsPage';
 import FurniturePage from 'contaiters/FurniturePage/FurniturePage';
@@ -19,7 +18,6 @@ export const AppBody: FC = () => (
             <Route path={routes.furniture({})} exact component={FurniturePage}/>
             <Route path={routes.furniturePattern()} exact component={FurniturePageItem}/>
             <Route path={routes.about()} exact component={AboutPage}/>
-            <Route path={routes.contacts()} exact component={ContactsPage}/>
             <Route path={routes.admin()} exact component={AdminPage}/>
         </Switch>
     </div>

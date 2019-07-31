@@ -2,10 +2,10 @@
     height: 100%;
     display: flex;
     align-items: center;
-
     margin-top: -$headerHeight_LG;
-    @include md-max() {
-        margin-top: -$headerHeight_SM;
+
+    @include lg-max() {
+        margin-top: 0;
     }
 }
 
@@ -16,10 +16,14 @@
         display: flex;
         align-items: normal;
         min-height: 100vh;
+        padding-bottom: #{main_Hor_Indent($maxvw)};
 
         @include xs-max() {
             align-items: normal;
             width: calc(#{$maxvw} - #{main_Hor_Indent($maxvw)} * 2);
+        }
+        @include lg-max() {
+            min-height: 0;
         }
         @include lg() {
             margin-top: 0;

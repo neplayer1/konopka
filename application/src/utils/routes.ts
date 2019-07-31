@@ -26,9 +26,6 @@ export const routes = {
   furniturePattern() {
     return `/furniture/:id?`;
   },
-  contacts() {
-    return '/contacts';
-  },
   about() {
     return '/about';
   },

@@ -45,7 +45,6 @@ export const Header: FC = () => {
             <HeaderNavLink onClick={handleCloseMenu} url={routes.interiors({})} label={nav.interiors}/>
             <HeaderNavLink onClick={handleCloseMenu} url={routes.furniture({})} label={nav.furniture}/>
             <HeaderNavLink onClick={handleCloseMenu} url={routes.about()} label={nav.about}/>
-            <HeaderNavLink onClick={handleCloseMenu} url={routes.contacts()} label={nav.contacts}/>
             <HeaderNavButton onClick={handleChangeLang} label={changeLangLabel}/>
           </nav>
         </CSSTransition>
