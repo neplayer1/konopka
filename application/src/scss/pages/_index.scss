@@ -3,13 +3,14 @@
     min-height: 100vh;
 
     @include md-max() {
-        margin-top: $headerHeight_SM;
+        margin-top: -$headerHeight_SM;
     }
     canvas {
         position: absolute;
-        left: 0;
+        left: 50%;
         top: 0;
-        width: 100%;
+        transform: translateX(-50%);
+        width: 100vw;
         height: 100vh;
     }
 }

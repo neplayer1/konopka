@@ -6,11 +6,11 @@ const dictionary: TIntlDictionary = {
   slogan: 'Beauty in simplicity',
 
   slogans: [
-    'Beauty in simplicity',
-    'Good design is aesthetic',
-    'Good design is unobtrusive',
-    'Good design is honest',
-    'Good design does not become obsolete',
+    'Beauty\nin simplicity',
+    'Good design\nis aesthetic',
+    'Good design\nis unobtrusive',
+    'Good design\nis honest',
+    'Good design\ndoesn\'t get old',
   ],
 
   nav: {

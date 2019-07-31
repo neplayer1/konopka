@@ -1,9 +1,10 @@
 export const springText = (target, message) => {
-    let COLOR = "black"
+    let COLOR = "#16171F";
     let MESSAGE = message;
 
     let FONT_SIZE = 100;
-    let AMOUNT = 4000;
+    let ONE_LETTER_AMOUNT = 300;
+    let AMOUNT = MESSAGE.length * ONE_LETTER_AMOUNT;
     let CLEAR_AMOUNT = 2;
     let SIZE = 2;
     let INITIAL_DISPLACEMENT = 100;
@@ -19,9 +20,9 @@ export const springText = (target, message) => {
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         // Mobile
         // MESSAGE = message;
-
+        ONE_LETTER_AMOUNT = 120;
+        AMOUNT = MESSAGE.length * ONE_LETTER_AMOUNT;
         FONT_SIZE = 50;
-        AMOUNT = 300;
         SIZE = 2;
         INITIAL_DISPLACEMENT = 100;
         SETTLE_SPEED = 1;
@@ -176,7 +177,6 @@ export const springText = (target, message) => {
         for (let i=0; i<POINTS.length; i++) {
             POINTS[i].scatter();
         }
-        console.log(message)
     }
 
     if (SCATTER) {
@@ -205,16 +205,30 @@ export const springText = (target, message) => {
         ctx.fillStyle = COLOR;
         ctx.textBaseline = "middle";
         ctx.textAlign = "center";
-        ctx.font = FONT_SIZE + "px Arial";
-        ctx.fillText(MESSAGE, canvas.width/2, canvas.height/2);
-        let textWidth = ctx.measureText(MESSAGE).width;
+        ctx.font = FONT_SIZE + "px 'PT Root UI', sans-serif";
+
+        const lines = MESSAGE.split('\n');
+        const linesLength = lines.length;
+        const maxWidthLine = lines.reduce((acc, l) => {
+            if (acc.length < l.length) {
+                acc = l;
+            }
+            return acc;
+        }, '');
+        const centerHeight = (canvas.height - FONT_SIZE*linesLength + FONT_SIZE)/2
+
+        for (let i = 0; i < linesLength; i++) {
+            ctx.fillText(lines[i], canvas.width/2, (centerHeight + i*FONT_SIZE));
+        }
+
+        let textWidth = ctx.measureText(maxWidthLine + 10).width;
         if (textWidth === 0) {
             return;
         }
         let minX = canvas.width/2 - textWidth/2;
-        let minY = canvas.height/2 - FONT_SIZE/2;
-        let data = ctx.getImageData(minX, minY, textWidth, FONT_SIZE).data;
-        ctx.clearRect(0,0,canvas.width,canvas.height);
+        let minY = centerHeight - FONT_SIZE/2;
+        ctx.fill();
+        let data = ctx.getImageData(minX, minY, textWidth, FONT_SIZE * linesLength).data;
         let isBlank = true;
         for (let i=0; i<data.length; i++) {
             if (data[i] !== 0) {
@@ -238,7 +252,7 @@ export const springText = (target, message) => {
                 }
                 num = Math.floor(num / 4);
                 x = w/2 - num%w;
-                y = FONT_SIZE/2 - Math.floor(num/w);
+                y = FONT_SIZE * linesLength/2 - Math.floor(num/w);
                 POINTS.push(new Point(x,y,data[num*4],data[num*4 + 1],data[num*4 + 2],data[num*4 + 3]));
                 curr = 0;
                 count++;
