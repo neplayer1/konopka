@@ -6,14 +6,14 @@ export const IndexPage: FC = () => {
   const i18n = useIntlDictionary();
   const {slogans} = i18n;
   const canvas = useRef<HTMLCanvasElement>(null);
-  const storageArray = sessionStorage.getItem('nums');
-  let usedNums = storageArray ? storageArray.split(',') : [];
-
-  if (usedNums.length === slogans.length) {
-    usedNums = [];
-  }
 
   useEffect(() => {
+    const storageArray = sessionStorage.getItem('nums');
+    let usedNums = storageArray ? storageArray.split(',') : [];
+
+    if (usedNums.length === slogans.length) {
+      usedNums = [];
+    }
     let rand = Math.floor(Math.random() * slogans.length);
     while (usedNums.includes(`${rand}`)) {
       rand = Math.floor(Math.random() * slogans.length);
@@ -24,7 +24,7 @@ export const IndexPage: FC = () => {
     const {init, cleanCanvas} = springText(canvas, slogans[rand]);
     init();
     return () => cleanCanvas();
-  }, [slogans, usedNums]);
+  }, [slogans]);
 
   return (
     <div className="index-page">

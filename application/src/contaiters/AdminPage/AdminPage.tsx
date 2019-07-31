@@ -1,9 +1,9 @@
 import React, {FC, useCallback, useState} from 'react';
 import {useDropzone} from "react-dropzone";
 import {graphql} from "react-apollo";
-import {addInteriorMutation} from "../../queries/mutations";
-import {DropzoneFieldSingle} from "../../components/DropzoneSingle/DropzoneFieldSingle";
-import {DropzoneFieldMulti} from "../../components/DropzoneMulti/DropzoneFieldMulti";
+import {addInteriorMutation} from "queries/mutations";
+import {DropzoneFieldSingle} from "components/DropzoneSingle/DropzoneFieldSingle";
+import {DropzoneFieldMulti} from "components/DropzoneMulti/DropzoneFieldMulti";
 
 interface UserFile extends File {
   preview: string;
@@ -14,7 +14,7 @@ const AdminPage: FC<any> = (props) => {
   const [mainFile, setMainFile] = useState<UserFile[]>([]);
   const [multiFiles, setMultiFiles] = useState<UserFile[]>([]);
 
-  const {acceptedFiles: mainImageFile, getRootProps: mainImageRootProps, getInputProps: mainImageInputProps, open: openSingle} = useDropzone({
+  const {acceptedFiles: mainImageFile, getRootProps: mainImageRootProps, getInputProps: mainImageInputProps} = useDropzone({
     accept: 'image/*',
     onDrop: mainImageFile => {
       setMainFile(mainImageFile.map(file => Object.assign(file, {

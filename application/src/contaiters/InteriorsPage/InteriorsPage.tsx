@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import React, {FC, useMemo} from 'react';
 import {routes} from 'utils/routes';
 import {CatalogPage} from "components/CatalogPage/CatalogPage";
 import {compose} from "react-apollo";
@@ -12,11 +12,11 @@ type TProps = {
 const InteriorsPage: FC<TProps> = (props) => {
     const {allInteriors = []} = props;
 
-    return (
+    return useMemo(() => (
         <div className="interiors-page">
             <CatalogPage data={allInteriors} baseUrl={routes.interiors}/>
         </div>
-    )
+    ),[allInteriors])
 };
 
 export default compose(allInteriors)(InteriorsPage)

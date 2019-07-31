@@ -144,9 +144,11 @@ interface TAllChildProps {
 }
 
 const allInteriors = graphql<TInputProps, TAllResponse, TVariables, TAllChildProps>(interiorsQuery, {
-    props: ({data}) => ({
-        allInteriors: data && data.interiors,
-    }),
+    props: ({data}) => {
+        return ({
+            allInteriors: data && data.interiors,
+        })
+    },
 });
 
 

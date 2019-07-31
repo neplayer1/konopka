@@ -20,7 +20,7 @@ const storeUpload = async (stream) => {
 
 const processUpload = async (upload) => {
   if (upload.length !== 1) {
-    return await upload.reduce(async(acc, file) => {
+    return await upload.reduce(async (acc, file) => {
       const accumulator = await acc;
       const { createReadStream } = await file;
       const stream = createReadStream();
@@ -54,7 +54,7 @@ const InteriorType = new GraphQLObjectType({
     yearEn: { type: GraphQLString },
     descriptionEn: { type: GraphQLString },
     previewUrl: { type: GraphQLString },
-    picturesUrl: {type: new GraphQLList(GraphQLString)}
+    picturesUrl: { type: new GraphQLList(GraphQLString) }
   })
 });
 
@@ -128,6 +128,51 @@ const Mutation = new GraphQLObjectType({
         return interior.save();
       }
     },
+    deleteInterior: {
+      type: InteriorType,
+      args: {
+        _id: { type: GraphQLObjectId }
+      },
+      resolve(parent, { _id }) {
+        return InteriorsModel.findByIdAndRemove(_id);
+      }
+    },
+    updateInterior: {
+      type: InteriorType,
+      args: {
+        _id: { type: GraphQLObjectId },
+        nameRu: { type: GraphQLString },
+        typeRu: { type: GraphQLString },
+        yearRu: { type: GraphQLString },
+        descriptionRu: { type: GraphQLString },
+        nameEn: { type: GraphQLString },
+        typeEn: { type: GraphQLString },
+        yearEn: { type: GraphQLString },
+        descriptionEn: { type: GraphQLString },
+        preview: { type: GraphQLUpload },
+        images: { type: GraphQLUpload },
+      },
+      resolve(parent, { _id, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, preview, images }) {
+        return InteriorsModel.findByIdAndUpdate(
+          _id,
+          {
+            $set: {
+              nameRu,
+              typeRu,
+              yearRu,
+              descriptionRu,
+              nameEn,
+              typeEn,
+              yearEn,
+              descriptionEn,
+              preview,
+              images
+            },
+          },
+          { new: true },
+        );
+      }
+    }
   }
 });
 
