@@ -4,7 +4,7 @@ import {graphql} from "react-apollo";
 import gql from "graphql-tag";
 import {TInterior} from "types/common";
 
-export const interiorsQuery = gql`
+export const GET_ALL_INTERIORS = gql`
   query interiorsQuery {
     interiors {
       _id,
@@ -22,7 +22,7 @@ export const interiorsQuery = gql`
   }
   `;
 
-const interiorByIdQuery = gql`
+const GET_INTERIOR_BY_ID = gql`
   query interiorByIdQuery($_id: ObjectId) {
     interiorById(_id: $_id) {
       _id,
@@ -40,7 +40,7 @@ const interiorByIdQuery = gql`
   }
   `;
 
-const interiorPreviousQuery = gql`
+const GET_PREV_INTERIOR_BY_ID = gql`
   query interiorPreviousQuery($_id: ObjectId) {
     interiorPrevious(_id: $_id) {
       _id,
@@ -58,7 +58,7 @@ const interiorPreviousQuery = gql`
   }
   `;
 
-const interiorNextQuery = gql`
+const GET_NEXT_INTERIOR_BY_ID = gql`
   query interiorNextQuery($_id: ObjectId) {
     interiorNext(_id: $_id) {
       _id,
@@ -92,7 +92,7 @@ interface TChildProps {
     current?: TInterior
 }
 
-const interiorById = graphql<TInputProps, TResponse, TVariables, TChildProps>(interiorByIdQuery, {
+const withInteriorById = graphql<TInputProps, TResponse, TVariables, TChildProps>(GET_INTERIOR_BY_ID, {
     props: ({data}) => ({
         current: data && data.interiorById,
     }),
@@ -109,7 +109,7 @@ interface TPrevChildProps {
     prev?: TInterior
 }
 
-const prevInteriorById = graphql<TInputProps, TPrevResponse, TVariables, TPrevChildProps>(interiorPreviousQuery, {
+const withPrevInteriorById = graphql<TInputProps, TPrevResponse, TVariables, TPrevChildProps>(GET_PREV_INTERIOR_BY_ID, {
     props: ({data}) => ({
         prev: data && data.interiorPrevious,
     }),
@@ -126,7 +126,7 @@ interface TNextChildProps {
     next?: TInterior
 }
 
-const nextInteriorById = graphql<TInputProps, TNextResponse, TVariables, TNextChildProps>(interiorNextQuery, {
+const withNextInteriorById = graphql<TInputProps, TNextResponse, TVariables, TNextChildProps>(GET_NEXT_INTERIOR_BY_ID, {
     props: ({data}) => ({
         next: data && data.interiorNext,
     }),
@@ -143,7 +143,7 @@ interface TAllChildProps {
     allInteriors?: TInterior
 }
 
-const allInteriors = graphql<TInputProps, TAllResponse, TVariables, TAllChildProps>(interiorsQuery, {
+const withAllInteriors = graphql<TInputProps, TAllResponse, TVariables, TAllChildProps>(GET_ALL_INTERIORS, {
     props: ({data}) => {
         return ({
             allInteriors: data && data.interiors,
@@ -152,4 +152,4 @@ const allInteriors = graphql<TInputProps, TAllResponse, TVariables, TAllChildPro
 });
 
 
-export {allInteriors, interiorById, prevInteriorById, nextInteriorById};
+export {withAllInteriors, withInteriorById, withPrevInteriorById, withNextInteriorById};

@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 const { graphqlUploadExpress } = require('graphql-upload');
-const { createWriteStream, existsSync, mkdirSync } = require('fs');
+const { existsSync, mkdirSync } = require('fs');
 
 mongoose.connect('mongodb+srv://nepahka:t5cmurcXDyP3JtSKZhSZ5J4q@interiordesign-9ryld.mongodb.net/interiorsDB?retryWrites=true&w=majority', { useNewUrlParser: true });
 
@@ -16,9 +16,8 @@ const PORT = 3005;
 
 app.use(cors());
 
-app.use("/images", express.static(path.join(__dirname, "/images")));
-
 app.use('/api',
+  express.static(path.join(__dirname, "/images")),
   graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 20 }),
   graphqlHTTP({
     schema,

@@ -95,6 +95,12 @@
     }
 }
 
+.form-control__dropzone {
+    > div {
+        outline: none;
+    }
+}
+
 .form-control__button {
     width: 240px;
     height: 60px;
@@ -117,6 +123,7 @@
 }
 
 .dropzone {
+    outline: none;
     width: 480px;
     display: flex;
     flex-direction: column;

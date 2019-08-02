@@ -4,7 +4,7 @@ import gql from "graphql-tag";
 import {TFurnitureMatch} from "utils/routes";
 import {TFurniture} from "types/common";
 
-const furnitureQuery = gql`
+const GET_ALL_FURNITURE = gql`
   query furnitureQuery {
     furniture {
       _id,
@@ -20,7 +20,7 @@ const furnitureQuery = gql`
   }
   `;
 
-const furnitureByIdQuery = gql`
+const GET_FURNITURE_BY_ID = gql`
   query furnitureByIdQuery($_id: ObjectId) {
     furnitureById(_id: $_id) {
       _id,
@@ -36,7 +36,7 @@ const furnitureByIdQuery = gql`
   }
   `;
 
-const furniturePreviousQuery = gql`
+const GET_PREV_FURNITURE_BY_ID = gql`
   query furniturePreviousQuery($_id: ObjectId) {
     furniturePrevious(_id: $_id) {
       _id,
@@ -52,7 +52,7 @@ const furniturePreviousQuery = gql`
   }
   `;
 
-const furnitureNextQuery = gql`
+const GET_NEXT_FURNITURE_BY_ID = gql`
   query furnitureNextQuery($_id: ObjectId) {
     furnitureNext(_id: $_id) {
       _id,
@@ -84,7 +84,7 @@ interface TChildProps {
     current?: TFurniture
 }
 
-const furnitureById = graphql<TInputProps, TResponse, TVariables, TChildProps>(furnitureByIdQuery, {
+const withFurnitureById = graphql<TInputProps, TResponse, TVariables, TChildProps>(GET_FURNITURE_BY_ID, {
     props: ({data}) => ({
         current: data && data.furnitureById,
     }),
@@ -101,7 +101,7 @@ interface TPrevChildProps {
     prev?: TFurniture
 }
 
-const prevFurnitureById = graphql<TInputProps, TPrevResponse, TVariables, TPrevChildProps>(furniturePreviousQuery, {
+const withPrevFurnitureById = graphql<TInputProps, TPrevResponse, TVariables, TPrevChildProps>(GET_PREV_FURNITURE_BY_ID, {
     props: ({data}) => ({
         prev: data && data.furniturePrevious,
     }),
@@ -118,7 +118,7 @@ interface TNextChildProps {
     next?: TFurniture
 }
 
-const nextFurnitureById = graphql<TInputProps, TNextResponse, TVariables, TNextChildProps>(furnitureNextQuery, {
+const withNextFurnitureById = graphql<TInputProps, TNextResponse, TVariables, TNextChildProps>(GET_NEXT_FURNITURE_BY_ID, {
     props: ({data}) => ({
         next: data && data.furnitureNext,
     }),
@@ -136,11 +136,11 @@ interface TAllChildProps {
     allFurniture?: TFurniture
 }
 
-const allFurniture = graphql<TInputProps, TAllResponse, TVariables, TAllChildProps>(furnitureQuery, {
+const withAllFurniture = graphql<TInputProps, TAllResponse, TVariables, TAllChildProps>(GET_ALL_FURNITURE, {
     props: ({data}) => ({
         allFurniture: data && data.furniture,
     })
 });
 
 
-export {allFurniture, furnitureById, prevFurnitureById, nextFurnitureById};
+export {withAllFurniture, withFurnitureById, withPrevFurnitureById, withNextFurnitureById};

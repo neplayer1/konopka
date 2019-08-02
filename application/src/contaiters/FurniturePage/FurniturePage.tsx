@@ -2,7 +2,7 @@ import React, {FC} from 'react';
 import {routes} from 'utils/routes';
 import {CatalogPage} from "components/CatalogPage/CatalogPage";
 import {compose} from "react-apollo";
-import {allFurniture} from "queries/furniture";
+import {withAllFurniture} from "queries/furniture";
 import {TInterior} from "types/common";
 
 type TProps = {
@@ -19,4 +19,4 @@ const FurniturePage: FC<TProps> = (props) => {
     )
 }
 
-export default compose(allFurniture)(FurniturePage)
+export default compose(withAllFurniture)(FurniturePage)

@@ -23,9 +23,7 @@ const App: React.FC = () => {
     <ApolloProvider client={client}>
       <IntlProvider>
         <Header/>
-        <div className="wrapper">
-          <AppBody/>
-        </div>
+        <AppBody/>
         <Footer/>
       </IntlProvider>
     </ApolloProvider>

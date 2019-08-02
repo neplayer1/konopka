@@ -2,7 +2,7 @@ import React, {FC, useCallback} from 'react';
 import {routes} from 'utils/routes';
 import {CatalogPageItem} from "components/CatalogPageItem/CatalogPageItem";
 import {compose} from "react-apollo";
-import {interiorById, nextInteriorById, prevInteriorById} from "queries/interiors";
+import {withInteriorById, withNextInteriorById, withPrevInteriorById} from "queries/interiors";
 import {History} from "history";
 import {TInterior} from "types/common";
 
@@ -32,4 +32,4 @@ const InteriorsPageItem: FC<TProps> = (props) => {
   </>
 }
 
-export default compose(interiorById, prevInteriorById, nextInteriorById)(InteriorsPageItem);
+export default compose(withInteriorById, withPrevInteriorById, withNextInteriorById)(InteriorsPageItem);

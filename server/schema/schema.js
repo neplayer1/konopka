@@ -3,8 +3,8 @@ const GraphQLObjectId = require('graphql-scalar-objectid');
 const { GraphQLUpload } = require('graphql-upload');
 const path = require('path');
 const shortid = require('shortid');
-const { createWriteStream, existsSync, mkdirSync } = require('fs');
-const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLList, GraphQLInt } = graphql;
+const { createWriteStream, existsSync, mkdirSync, unlink } = require('fs');
+const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLList } = graphql;
 
 const storeUpload = async (stream) => {
   const id = shortid.generate();
@@ -13,7 +13,10 @@ const storeUpload = async (stream) => {
   return new Promise((resolve, reject) =>
     stream
       .pipe(createWriteStream(path.join(__dirname, "../images", imgPath)))
-      .on("finish", () => resolve({ imgPath }))
+      .on("finish", () => {
+        console.log("Uploaded success!")
+        return resolve({ imgPath })
+      })
       .on("error", reject)
   );
 };
@@ -34,8 +37,15 @@ const processUpload = async (upload) => {
     const { imgPath } = await storeUpload(stream);
     return imgPath;
   }
+};
 
-
+const processDelete = async (url) => {
+  await unlink(path.join(__dirname, "../images", url), function (error) {
+    if (error) {
+      throw error;
+    }
+    console.log('Deleted success!');
+  })
 };
 
 const InteriorsModel = require('../models/interiors');
@@ -72,6 +82,26 @@ const InteriorMutateType = new GraphQLObjectType({
     descriptionEn: { type: GraphQLString },
     preview: { type: GraphQLUpload },
     images: { type: GraphQLUpload }
+  })
+});
+
+const InteriorEditMutateType = new GraphQLObjectType({
+  name: 'InteriorEditMutate',
+  fields: () => ({
+    _id: { type: GraphQLObjectId },
+    nameRu: { type: GraphQLString },
+    typeRu: { type: GraphQLString },
+    yearRu: { type: GraphQLString },
+    descriptionRu: { type: GraphQLString },
+    nameEn: { type: GraphQLString },
+    typeEn: { type: GraphQLString },
+    yearEn: { type: GraphQLString },
+    descriptionEn: { type: GraphQLString },
+    previewUrl: { type: GraphQLString },
+    newPreview: { type: GraphQLUpload },
+    imagesUrls: { type: new GraphQLList(GraphQLString) },
+    newImages: { type: GraphQLUpload },
+    removedImagesUrls: { type: new GraphQLList(GraphQLString) },
   })
 });
 
@@ -138,7 +168,7 @@ const Mutation = new GraphQLObjectType({
       }
     },
     updateInterior: {
-      type: InteriorType,
+      type: InteriorEditMutateType,
       args: {
         _id: { type: GraphQLObjectId },
         nameRu: { type: GraphQLString },
@@ -149,28 +179,54 @@ const Mutation = new GraphQLObjectType({
         typeEn: { type: GraphQLString },
         yearEn: { type: GraphQLString },
         descriptionEn: { type: GraphQLString },
-        preview: { type: GraphQLUpload },
-        images: { type: GraphQLUpload },
+        previewUrl: { type: GraphQLString },
+        newPreview: { type: GraphQLUpload },
+        imagesUrls: { type: new GraphQLList(GraphQLString) },
+        newImages: { type: GraphQLUpload },
+        removedImagesUrls: { type: new GraphQLList(GraphQLString) },
       },
-      resolve(parent, { _id, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, preview, images }) {
-        return InteriorsModel.findByIdAndUpdate(
-          _id,
-          {
-            $set: {
-              nameRu,
-              typeRu,
-              yearRu,
-              descriptionRu,
-              nameEn,
-              typeEn,
-              yearEn,
-              descriptionEn,
-              preview,
-              images
-            },
-          },
-          { new: true },
-        );
+      async resolve(parent, { _id, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, previewUrl, newPreview, imagesUrls, newImages, removedImagesUrls }) {
+        console.log("newPreview", newPreview, previewUrl, imagesUrls, newImages, removedImagesUrls)
+        let preview = previewUrl;
+        let images = imagesUrls;
+        if (newPreview.length !== 0) {
+          preview = await processUpload(newPreview);
+          await processDelete(previewUrl);
+        }
+        if (removedImagesUrls.length !== 0) {
+          removedImagesUrls.map(async (image) => {
+            await processDelete(image);
+          })
+        }
+        if (newImages.length !== 0) {
+          const newUrls = await processUpload(newImages);
+          if (typeof newUrls === "object") {
+            images = [...imagesUrls, ...newUrls];
+          } else {
+            imagesUrls.push(newUrls)
+            images = imagesUrls;
+          }
+
+        }
+        console.log(preview, images)
+        // return InteriorsModel.findByIdAndUpdate(
+        //   _id,
+        //   {
+        //     $set: {
+        //       nameRu,
+        //       typeRu,
+        //       yearRu,
+        //       descriptionRu,
+        //       nameEn,
+        //       typeEn,
+        //       yearEn,
+        //       descriptionEn,
+        //       preview,
+        //       images
+        //     },
+        //   },
+        //   { new: true },
+        // );
       }
     }
   }

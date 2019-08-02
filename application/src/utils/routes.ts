@@ -32,4 +32,14 @@ export const routes = {
   admin() {
     return '/admin';
   },
+  adminAddInterior() {
+    return `/admin/interiors/add`;
+  },
+  adminEditInterior({id}: TInteriorsParams) {
+    const path = [id].filter(t => !!t);
+    return `/admin/interiors/edit/${path.join('/')}`;
+  },
+  adminEditInteriorPattern() {
+    return `/admin/interiors/edit/:id?`;
+  },
 };

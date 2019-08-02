@@ -3,7 +3,7 @@ import {routes} from 'utils/routes';
 import {CatalogPageItem} from "components/CatalogPageItem/CatalogPageItem";
 import {History} from "history";
 import {compose} from "react-apollo";
-import {furnitureById, nextFurnitureById, prevFurnitureById} from "queries/furniture";
+import {withFurnitureById, withNextFurnitureById, withPrevFurnitureById} from "queries/furniture";
 import {TFurniture} from "types/common";
 
 type TProps = {
@@ -33,4 +33,4 @@ const FurniturePageItem: FC<TProps> = (props) => {
     );
 }
 
-export default compose(furnitureById, prevFurnitureById, nextFurnitureById)(FurniturePageItem);
+export default compose(withFurnitureById, withPrevFurnitureById, withNextFurnitureById)(FurniturePageItem);

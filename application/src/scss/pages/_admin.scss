@@ -1,0 +1,68 @@
+.admin-page {
+    @include maxVW($maxvw) {
+        margin-bottom: #{main_Hor_Indent($maxvw)};
+    }
+}
+
+.articles__list {
+    margin: auto;
+    max-width: 1160px;
+
+    ~ .articles__list {
+        margin-top: 80px;
+    }
+    .form-control__button {
+        margin-top: 20px;
+    }
+}
+
+.articles_list__title {
+    font-family: $Monserrat;
+    font-weight: bold;
+    font-size: 36px;
+    line-height: 44px;
+    margin-bottom: 40px;
+}
+
+.articles_list__item {
+    width: 100%;
+    height: 60px;
+    padding: 11px 20px;
+    box-sizing: border-box;
+    border: 4px solid $white;
+    font-family: $PTRootUIReg;
+    font-size: 24px;
+    line-height: 30px;
+    color: $black;
+    background-color: transparent;
+    transition: background-color 0.1s ease-in-out;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+        background-color: $white30;
+    }
+
+    ~ .articles_list__item {
+        margin-top: 4px;
+    }
+}
+
+.articles_list_item__name {
+    flex: 1;
+}
+
+.articles_list_item__btn {
+    font-family: $PTRootUIReg;
+    font-size: 18px;
+    line-height: 25px;
+    cursor: pointer;
+
+    ~ .articles_list_item__btn {
+        margin-left: 20px;
+    }
+}
+
+.articles_list_item__btn--delete {
+    color: $red;
+}
