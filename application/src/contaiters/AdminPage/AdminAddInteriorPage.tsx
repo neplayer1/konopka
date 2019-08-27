@@ -1,15 +1,16 @@
 import React, {FC, useCallback, useState} from 'react';
-import {graphql} from "react-apollo";
-import {ADD_INTERIOR} from "queries/mutations";
 import {FileControl} from "components/FileControl/FileControl";
+import {useMutation} from "@apollo/react-hooks";
+import {ADD_INTERIOR} from "queries/mutations";
 
 interface UserFile extends File {
   preview: string;
 }
 
-const AdminAddInteriorPage: FC<any> = (props) => {
+export const AdminAddInteriorPage: FC<any> = (props) => {
   console.log('RENDER ADD_PAGE', props);
   const {mutate} = props;
+  const [addInterior, {data}] = useMutation(ADD_INTERIOR);
   const [mainFile, setMainFile] = useState<UserFile[]>([]);
   const [multiFiles, setMultiFiles] = useState<UserFile[]>([]);
 
@@ -51,10 +52,11 @@ const AdminAddInteriorPage: FC<any> = (props) => {
     const preview = mainFile;
     const images = multiFiles;
     console.log(preview, images);
-    mutate({
+    const newInterior = {
       variables: {nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, preview, images},
       // refetchQueries: [ { query: GET_ALL_INTERIORS }]
-    });
+    }
+    addInterior(newInterior);
   }, [nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, mainFile, multiFiles, mutate]);
 
   const handleSetMainFile = useCallback((file) => {
@@ -121,5 +123,3 @@ const AdminAddInteriorPage: FC<any> = (props) => {
     </div>
   );
 }
-
-export default graphql(ADD_INTERIOR)(AdminAddInteriorPage)

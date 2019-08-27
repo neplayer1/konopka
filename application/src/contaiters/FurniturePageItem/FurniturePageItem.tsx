@@ -1,36 +1,48 @@
 import React, {FC, useCallback} from 'react';
-import {routes} from 'utils/routes';
+import {routes, TFurnitureMatch} from 'utils/routes';
 import {CatalogPageItem} from "components/CatalogPageItem/CatalogPageItem";
 import {History} from "history";
-import {compose} from "react-apollo";
-import {withFurnitureById, withNextFurnitureById, withPrevFurnitureById} from "queries/furniture";
-import {TFurniture} from "types/common";
+import {useQuery} from "@apollo/react-hooks";
+import {match} from "react-router";
+import {GET_FURNITURE_BY_ID, GET_NEXT_FURNITURE_BY_ID, GET_PREV_FURNITURE_BY_ID, T_GET_FURNITURE_BY_ID, T_GET_NEXT_FURNITURE_BY_ID, T_GET_PREV_FURNITURE_BY_ID, T_VAR_GET_FURNITURE_BY_ID, T_VAR_NEXT_FURNITURE_BY_ID, T_VAR_PREV_FURNITURE_BY_ID} from "queries/furniture";
 
 type TProps = {
-    history: History;
-    current: TFurniture;
-    prev: TFurniture;
-    next: TFurniture;
+  history: History;
+  match: match<TFurnitureMatch>;
 }
 
-const FurniturePageItem: FC<TProps> = (props) => {
-    const {history, current, prev, next} = props;
+export const FurniturePageItem: FC<TProps> = (props) => {
+  const {match, history} = props;
+  const {loading, error, data} = useQuery<T_GET_FURNITURE_BY_ID, T_VAR_GET_FURNITURE_BY_ID>(GET_FURNITURE_BY_ID, {
+    variables: {_id: match.params.id}
+  });
+  const {loading: loadingPrev, error: errorPrev, data: dataPrev} = useQuery<T_GET_PREV_FURNITURE_BY_ID, T_VAR_PREV_FURNITURE_BY_ID>(GET_PREV_FURNITURE_BY_ID, {
+    variables: {_id: match.params.id}
+  });
+  const {loading: loadingNext, error: errorNext, data: dataNext} = useQuery<T_GET_NEXT_FURNITURE_BY_ID, T_VAR_NEXT_FURNITURE_BY_ID>(GET_NEXT_FURNITURE_BY_ID, {
+    variables: {_id: match.params.id}
+  });
+  const {furnitureById} = data!;
+  const {furniturePrevious} = dataPrev!;
+  const {furnitureNext} = dataNext!;
 
-    const handlePrevItem = useCallback(() => {
-        if (prev) {
-            history.push(routes.furniture({id: prev._id}));
-        }
-    }, [history, prev]);
+  const loaded = !loading && !loadingPrev && !loadingNext;
 
-    const handleNextItem = useCallback(() => {
-        if (next) {
-            history.push(routes.furniture({id: next._id}));
-        }
-    }, [history, next]);
+  const handlePrevItem = useCallback(() => {
+    if (furniturePrevious) {
+      history.push(routes.furniture({id: furniturePrevious._id}));
+    }
+  }, [history, furniturePrevious]);
 
-    return (
-        <CatalogPageItem currentItem={current} prevItem={prev} nextItem={next} handlePrevItem={handlePrevItem} handleNextItem={handleNextItem}/>
-    );
+  const handleNextItem = useCallback(() => {
+    if (furnitureNext) {
+      history.push(routes.furniture({id: furnitureNext._id}));
+    }
+  }, [history, furnitureNext]);
+
+  return (
+    <>
+      {loaded && <CatalogPageItem currentItem={furnitureById} prevItem={furniturePrevious} nextItem={furnitureNext} handlePrevItem={handlePrevItem} handleNextItem={handleNextItem}/>}
+    </>
+  );
 }
-
-export default compose(withFurnitureById, withPrevFurnitureById, withNextFurnitureById)(FurniturePageItem);

@@ -1,22 +1,21 @@
 import React, {FC} from 'react';
 import {routes} from 'utils/routes';
 import {CatalogPage} from "components/CatalogPage/CatalogPage";
-import {compose} from "react-apollo";
-import {withAllFurniture} from "queries/furniture";
-import {TInterior} from "types/common";
+import {useQuery} from "@apollo/react-hooks";
+import {GET_ALL_FURNITURE, T_GET_ALL_FURNITURE} from "queries/furniture";
 
-type TProps = {
-    allFurniture: TInterior[];
-}
+export const FurniturePage: FC = () => {
+  const {loading, error, data} = useQuery<T_GET_ALL_FURNITURE>(GET_ALL_FURNITURE);
+  const {furniture} = data!;
 
-const FurniturePage: FC<TProps> = (props) => {
-    const {allFurniture = []} = props;
-
-    return (
+  return (
+    <>
+      {
+        !loading &&
         <div className="furniture-page">
-            <CatalogPage data={allFurniture} baseUrl={routes.furniture}/>
+          <CatalogPage data={furniture} baseUrl={routes.furniture}/>
         </div>
-    )
+      }
+    </>
+  )
 }
-
-export default compose(withAllFurniture)(FurniturePage)

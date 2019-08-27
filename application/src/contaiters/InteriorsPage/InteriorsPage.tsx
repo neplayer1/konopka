@@ -1,22 +1,21 @@
 import React, {FC, useMemo} from 'react';
 import {routes} from 'utils/routes';
 import {CatalogPage} from "components/CatalogPage/CatalogPage";
-import {compose} from "react-apollo";
-import {withAllInteriors} from "queries/interiors";
-import {TInterior} from "types/common";
+import {GET_ALL_INTERIORS, T_GET_ALL_INTERIORS} from "queries/interiors";
+import {useQuery} from "@apollo/react-hooks";
 
-type TProps = {
-    allInteriors: TInterior[];
-}
+export const InteriorsPage: FC = () => {
+  const {loading, error, data} = useQuery<T_GET_ALL_INTERIORS>(GET_ALL_INTERIORS);
+  const {interiors} = data!;
 
-const InteriorsPage: FC<TProps> = (props) => {
-    const {allInteriors = []} = props;
-
-    return useMemo(() => (
+  return useMemo(() => (
+    <>
+      {
+        !loading &&
         <div className="interiors-page">
-            <CatalogPage data={allInteriors} baseUrl={routes.interiors}/>
+          <CatalogPage data={interiors} baseUrl={routes.interiors}/>
         </div>
-    ),[allInteriors])
+      }
+    </>
+  ), [interiors, loading])
 };
-
-export default compose(withAllInteriors)(InteriorsPage)

@@ -1,35 +1,42 @@
 import React, {FC, useCallback} from 'react';
-import {routes} from 'utils/routes';
+import {routes, TInteriorMatch} from 'utils/routes';
 import {CatalogPageItem} from "components/CatalogPageItem/CatalogPageItem";
-import {compose} from "react-apollo";
-import {withInteriorById, withNextInteriorById, withPrevInteriorById} from "queries/interiors";
+import {GET_INTERIOR_BY_ID, GET_NEXT_INTERIOR_BY_ID, GET_PREV_INTERIOR_BY_ID, T_GET_INTERIOR_BY_ID, T_GET_NEXT_INTERIOR_BY_ID, T_GET_PREV_INTERIOR_BY_ID, T_VAR_GET_INTERIOR_BY_ID, T_VAR_NEXT_INTERIOR_BY_ID, T_VAR_PREV_INTERIOR_BY_ID} from "queries/interiors";
 import {History} from "history";
-import {TInterior} from "types/common";
+import {useQuery} from "@apollo/react-hooks";
+import {match} from "react-router";
 
 type TProps = {
   history: History;
-  current: TInterior;
-  prev: TInterior;
-  next: TInterior;
+  match: match<TInteriorMatch>;
 }
 
-const InteriorsPageItem: FC<TProps> = (props) => {
-  console.log('InteriorsPageItem render', props);
-  const {history, current, prev, next} = props;
+export const InteriorsPageItem: FC<TProps> = (props) => {
+  const {match, history} = props;
+  const {loading, error, data} = useQuery<T_GET_INTERIOR_BY_ID, T_VAR_GET_INTERIOR_BY_ID>(GET_INTERIOR_BY_ID, {
+    variables: {_id: match.params.id}
+  });
+  const {loading: loadingPrev, error: errorPrev, data: dataPrev} = useQuery<T_GET_PREV_INTERIOR_BY_ID, T_VAR_PREV_INTERIOR_BY_ID>(GET_PREV_INTERIOR_BY_ID, {
+    variables: {_id: match.params.id}
+  });
+  const {loading: loadingNext, error: errorNext, data: dataNext} = useQuery<T_GET_NEXT_INTERIOR_BY_ID, T_VAR_NEXT_INTERIOR_BY_ID>(GET_NEXT_INTERIOR_BY_ID, {
+    variables: {_id: match.params.id}
+  });
+  const {interiorById} = data!;
+  const {interiorPrevious} = dataPrev!;
+  const {interiorNext} = dataNext!;
 
-  const loaded = !!current && prev !== undefined && next !== undefined;
+  const loaded = !loading && !loadingPrev && !loadingNext;
 
   const handlePrevItem = useCallback(() => {
-    history.push(routes.interiors({id: prev._id}));
-  }, [history, prev]);
+    history.push(routes.interiors({id: interiorPrevious._id}));
+  }, [history, interiorPrevious]);
 
   const handleNextItem = useCallback(() => {
-    history.push(routes.interiors({id: next._id}));
-  }, [history, next]);
+    history.push(routes.interiors({id: interiorNext._id}));
+  }, [history, interiorNext]);
 
   return <>
-    {loaded && <CatalogPageItem currentItem={current} prevItem={prev} nextItem={next} handlePrevItem={handlePrevItem} handleNextItem={handleNextItem}/>}
+    {loaded && <CatalogPageItem currentItem={interiorById} prevItem={interiorPrevious} nextItem={interiorNext} handlePrevItem={handlePrevItem} handleNextItem={handleNextItem}/>}
   </>
 }
-
-export default compose(withInteriorById, withPrevInteriorById, withNextInteriorById)(InteriorsPageItem);

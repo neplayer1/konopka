@@ -1,10 +1,11 @@
-import {match} from "react-router";
-import {graphql} from "react-apollo";
 import gql from "graphql-tag";
-import {TFurnitureMatch} from "utils/routes";
-import {TFurniture} from "types/common";
+import {TFurniture, TInterior} from "types/common";
 
-const GET_ALL_FURNITURE = gql`
+export type T_GET_ALL_FURNITURE = {
+    furniture: TFurniture[]
+}
+
+export const GET_ALL_FURNITURE = gql`
   query furnitureQuery {
     furniture {
       _id,
@@ -20,7 +21,14 @@ const GET_ALL_FURNITURE = gql`
   }
   `;
 
-const GET_FURNITURE_BY_ID = gql`
+export type T_GET_FURNITURE_BY_ID = {
+    furnitureById: TFurniture
+}
+export type T_VAR_GET_FURNITURE_BY_ID = {
+    _id: string
+}
+
+export const GET_FURNITURE_BY_ID = gql`
   query furnitureByIdQuery($_id: ObjectId) {
     furnitureById(_id: $_id) {
       _id,
@@ -36,7 +44,14 @@ const GET_FURNITURE_BY_ID = gql`
   }
   `;
 
-const GET_PREV_FURNITURE_BY_ID = gql`
+export type T_GET_PREV_FURNITURE_BY_ID = {
+    furniturePrevious: TInterior
+}
+export type T_VAR_PREV_FURNITURE_BY_ID = {
+    _id: string
+}
+
+export const GET_PREV_FURNITURE_BY_ID = gql`
   query furniturePreviousQuery($_id: ObjectId) {
     furniturePrevious(_id: $_id) {
       _id,
@@ -52,7 +67,14 @@ const GET_PREV_FURNITURE_BY_ID = gql`
   }
   `;
 
-const GET_NEXT_FURNITURE_BY_ID = gql`
+export type T_GET_NEXT_FURNITURE_BY_ID = {
+    furnitureNext: TInterior
+}
+export type T_VAR_NEXT_FURNITURE_BY_ID = {
+    _id: string
+}
+
+export const GET_NEXT_FURNITURE_BY_ID = gql`
   query furnitureNextQuery($_id: ObjectId) {
     furnitureNext(_id: $_id) {
       _id,
@@ -67,80 +89,3 @@ const GET_NEXT_FURNITURE_BY_ID = gql`
     }
   }
   `;
-
-type TResponse = {
-    furnitureById: TFurniture;
-}
-
-type TInputProps = {
-    match: match<TFurnitureMatch>
-}
-
-type TVariables = {
-    _id: string;
-};
-
-interface TChildProps {
-    current?: TFurniture
-}
-
-const withFurnitureById = graphql<TInputProps, TResponse, TVariables, TChildProps>(GET_FURNITURE_BY_ID, {
-    props: ({data}) => ({
-        current: data && data.furnitureById,
-    }),
-    options: ({match}) => ({
-        variables: {_id: match.params.id}
-    })
-});
-
-type TPrevResponse = {
-    furniturePrevious: TFurniture;
-}
-
-interface TPrevChildProps {
-    prev?: TFurniture
-}
-
-const withPrevFurnitureById = graphql<TInputProps, TPrevResponse, TVariables, TPrevChildProps>(GET_PREV_FURNITURE_BY_ID, {
-    props: ({data}) => ({
-        prev: data && data.furniturePrevious,
-    }),
-    options: ({match}) => ({
-        variables: {_id: match.params.id}
-    })
-});
-
-type TNextResponse = {
-    furnitureNext: TFurniture;
-}
-
-interface TNextChildProps {
-    next?: TFurniture
-}
-
-const withNextFurnitureById = graphql<TInputProps, TNextResponse, TVariables, TNextChildProps>(GET_NEXT_FURNITURE_BY_ID, {
-    props: ({data}) => ({
-        next: data && data.furnitureNext,
-    }),
-    options: ({match}) => ({
-        variables: {_id: match.params.id}
-    })
-});
-
-
-type TAllResponse = {
-    furniture: TFurniture;
-}
-
-interface TAllChildProps {
-    allFurniture?: TFurniture
-}
-
-const withAllFurniture = graphql<TInputProps, TAllResponse, TVariables, TAllChildProps>(GET_ALL_FURNITURE, {
-    props: ({data}) => ({
-        allFurniture: data && data.furniture,
-    })
-});
-
-
-export {withAllFurniture, withFurnitureById, withPrevFurnitureById, withNextFurnitureById};

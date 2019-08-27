@@ -1,20 +1,20 @@
 import React, {FC} from 'react';
-import {Switch, Route, withRouter} from 'react-router';
+import {Route, Switch, withRouter} from 'react-router';
 import {routes} from 'utils/routes';
-import {IndexPage} from 'contaiters/IndexPage/IndexPage';
-import InteriorsPage from 'contaiters/InteriorsPage/InteriorsPage';
-import FurniturePage from 'contaiters/FurniturePage/FurniturePage';
-import {AboutPage} from 'contaiters/AboutPage/AboutPage';
-import InteriorsPageItem from "../InteriorsPageItem/InteriorsPageItem";
-import FurniturePageItem from "../FurniturePageItem/FurniturePageItem";
-import AdminPage from "../AdminPage/AdminPage";
+import {InteriorsPage} from 'contaiters/InteriorsPage/InteriorsPage';
 import SwitchTransition from "react-transition-group/SwitchTransition";
 import CSSTransition from "react-transition-group/CSSTransition";
 import {Location} from 'history';
 import {PAGE_ANIMATION_DURATION} from "constants/common";
 import ScrollToTop from 'hoc/hocScrollToTop';
-import AdminAddInteriorPage from "contaiters/AdminPage/AdminAddInteriorPage";
-import AdminEditInteriorPage from "contaiters/AdminPage/AdminEditInteriorPage";
+import {InteriorsPageItem} from "contaiters/InteriorsPageItem/InteriorsPageItem";
+import {AdminPage} from "contaiters/AdminPage/AdminPage";
+import {IndexPage} from "contaiters/IndexPage/IndexPage";
+import {FurniturePage} from "contaiters/FurniturePage/FurniturePage";
+import {FurniturePageItem} from "contaiters/FurniturePageItem/FurniturePageItem";
+import {AboutPage} from "contaiters/AboutPage/AboutPage";
+import {AdminAddInteriorPage} from "contaiters/AdminPage/AdminAddInteriorPage";
+import {AdminEditInteriorPage} from "contaiters/AdminPage/AdminEditInteriorPage";
 
 type TProps = {
   location: Location;
@@ -26,7 +26,7 @@ const AppBody: FC<TProps> = ({location}) => {
       <div className="main">
         <ScrollToTop>
           <SwitchTransition>
-            <CSSTransition key={location.key} classNames="fade-out" timeout={PAGE_ANIMATION_DURATION}>
+            <CSSTransition key={location.pathname} classNames="fade-out" timeout={PAGE_ANIMATION_DURATION}>
               <Switch location={location}>
                 <Route path="/" exact component={IndexPage}/>
                 <Route path={routes.interiors({})} exact component={InteriorsPage}/>

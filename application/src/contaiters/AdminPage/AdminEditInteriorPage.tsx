@@ -1,25 +1,30 @@
 import React, {FC, useCallback, useEffect, useState} from 'react';
-import {compose} from "react-apollo";
-import {withGraphqlUpdate} from "queries/mutations";
-import {TInterior, TUpdateInterior} from "types/common";
+import {UPDATE_INTERIOR} from "queries/mutations";
+import {TUpdateInterior} from "types/common";
 import {FileControl} from "components/FileControl/FileControl";
 import {TInteriorMatch} from "utils/routes";
 import {match} from "react-router";
-import {withInteriorById} from "queries/interiors";
+import {GET_INTERIOR_BY_ID, T_GET_INTERIOR_BY_ID, T_VAR_GET_INTERIOR_BY_ID} from "queries/interiors";
+import {useMutation, useQuery} from "@apollo/react-hooks";
 
 interface UserFile extends File {
   preview: string;
 }
 
 type TProps = {
-  current: TInterior;
   updateInterior: (interior: TUpdateInterior) => void;
   match: match<TInteriorMatch>;
 }
 
-const AdminEditInteriorPage: FC<TProps> = (props) => {
+export const AdminEditInteriorPage: FC<TProps> = (props) => {
   console.log('RENDER EDIT_PAGE', props);
-  const {current, updateInterior, match} = props;
+  const {match} = props;
+  const {loading, error, data} = useQuery<T_GET_INTERIOR_BY_ID, T_VAR_GET_INTERIOR_BY_ID>(GET_INTERIOR_BY_ID, {
+    variables: {_id: match.params.id}
+  });
+  const {interiorById} = data!;
+  const [updateInterior] = useMutation<TUpdateInterior>(UPDATE_INTERIOR);
+  // const {current, updateInterior, match} = props;
   const [mainFile, setMainFile] = useState<UserFile[]>([]);
   const [multiFiles, setMultiFiles] = useState<UserFile[]>([]);
 
@@ -36,19 +41,19 @@ const AdminEditInteriorPage: FC<TProps> = (props) => {
   const [removedImagesUrls, setRemovedImagesUrls] = useState<string[]>([]);
 
   useEffect(() => {
-    if (current) {
-      setNameRu(current.nameRu);
-      setNameEn(current.nameEn);
-      setTypeRu(current.typeRu);
-      setTypeEn(current.typeEn);
-      setYearRu(current.yearRu);
-      setYearEn(current.yearEn);
-      setDescriptionRu(current.descriptionRu);
-      setDescriptionEn(current.descriptionEn);
-      setPreviewUrl([current.previewUrl]);
-      setPicturesUrl(current.picturesUrl);
+    if (interiorById) {
+      setNameRu(interiorById.nameRu);
+      setNameEn(interiorById.nameEn);
+      setTypeRu(interiorById.typeRu);
+      setTypeEn(interiorById.typeEn);
+      setYearRu(interiorById.yearRu);
+      setYearEn(interiorById.yearEn);
+      setDescriptionRu(interiorById.descriptionRu);
+      setDescriptionEn(interiorById.descriptionEn);
+      setPreviewUrl([interiorById.previewUrl]);
+      setPicturesUrl(interiorById.picturesUrl);
     }
-  }, [current]);
+  }, [interiorById]);
 
   const handleChangeNameRu = useCallback((event) => {
     setNameRu(event.target.value);
@@ -77,22 +82,24 @@ const AdminEditInteriorPage: FC<TProps> = (props) => {
 
   const update = useCallback(() => {
     const updatedInterior = {
-      _id: match.params.id,
-      nameRu,
-      typeRu,
-      yearRu,
-      descriptionRu,
-      nameEn,
-      typeEn,
-      yearEn,
-      descriptionEn,
-      previewUrl: previewUrl[0],
-      newPreview: mainFile,
-      imagesUrls: picturesUrl,
-      newImages: multiFiles,
-      removedImagesUrls,
+      variables: {
+        _id: match.params.id,
+        nameRu,
+        typeRu,
+        yearRu,
+        descriptionRu,
+        nameEn,
+        typeEn,
+        yearEn,
+        descriptionEn,
+        previewUrl: previewUrl[0],
+        newPreview: mainFile,
+        imagesUrls: picturesUrl,
+        newImages: multiFiles,
+        removedImagesUrls,
+      }
     }
-    console.log(updatedInterior)
+    console.log(updatedInterior);
     updateInterior(updatedInterior);
   }, [match.params.id, updateInterior, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, previewUrl, mainFile, picturesUrl, multiFiles, removedImagesUrls]);
 
@@ -173,5 +180,3 @@ const AdminEditInteriorPage: FC<TProps> = (props) => {
     </div>
   );
 }
-
-export default compose(withGraphqlUpdate, withInteriorById)(AdminEditInteriorPage)
