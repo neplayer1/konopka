@@ -57,7 +57,7 @@ export const AdminAddInteriorPage: FC<any> = (props) => {
       // refetchQueries: [ { query: GET_ALL_INTERIORS }]
     }
     addInterior(newInterior);
-  }, [nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, mainFile, multiFiles, mutate]);
+  }, [mainFile, multiFiles, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, addInterior]);
 
   const handleSetMainFile = useCallback((file) => {
     if (file.length !== 0) {

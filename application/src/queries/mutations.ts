@@ -38,9 +38,11 @@ export const UPDATE_INTERIOR = gql`
   `;
 
 export const DELETE_INTERIOR = gql`
-  mutation deleteInterior($_id: ObjectId) {
-    deleteInterior(_id: $_id) {
-      _id
+  mutation deleteInterior($_id: ObjectId, $previewUrl: String!, $picturesUrl: [String]! ) {
+    deleteInterior(_id: $_id, previewUrl: $previewUrl, picturesUrl: $picturesUrl) {
+      _id,
+      previewUrl,
+      picturesUrl
     }
   }
   `;

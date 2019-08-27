@@ -102,6 +102,9 @@
 }
 
 .form-control__button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 240px;
     height: 60px;
     padding: 11px 20px;

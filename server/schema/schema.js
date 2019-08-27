@@ -161,9 +161,22 @@ const Mutation = new GraphQLObjectType({
     deleteInterior: {
       type: InteriorType,
       args: {
-        _id: { type: GraphQLObjectId }
+        _id: { type: GraphQLObjectId },
+        previewUrl: { type: GraphQLString },
+        picturesUrl: { type: new GraphQLList(GraphQLString) }
       },
-      resolve(parent, { _id }) {
+      async resolve(parent, { _id, previewUrl, picturesUrl }) {
+        console.log("DELETE STARTED");
+        if (previewUrl.length !== 0) {
+          // удаляем превью
+          await processDelete(previewUrl);
+        }
+        if (picturesUrl.length !== 0) {
+          // удаляем картинки
+          picturesUrl.map(async (image) => {
+            await processDelete(image);
+          })
+        }
         return InteriorsModel.findByIdAndRemove(_id);
       }
     },
@@ -186,47 +199,52 @@ const Mutation = new GraphQLObjectType({
         removedImagesUrls: { type: new GraphQLList(GraphQLString) },
       },
       async resolve(parent, { _id, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, previewUrl, newPreview, imagesUrls, newImages, removedImagesUrls }) {
-        console.log("newPreview", newPreview, previewUrl, imagesUrls, newImages, removedImagesUrls)
         let preview = previewUrl;
         let images = imagesUrls;
+        // смотрим не изменилось ли превью
         if (newPreview.length !== 0) {
+          // загружаем новое
           preview = await processUpload(newPreview);
+          // удаляем старое
           await processDelete(previewUrl);
         }
+        // смотрим есть ли удаленные картинки
         if (removedImagesUrls.length !== 0) {
+          // удаляем их
           removedImagesUrls.map(async (image) => {
             await processDelete(image);
           })
         }
+        // смотрим есть ли новые картинки
         if (newImages.length !== 0) {
+          // загружаем их
           const newUrls = await processUpload(newImages);
           if (typeof newUrls === "object") {
             images = [...imagesUrls, ...newUrls];
           } else {
-            imagesUrls.push(newUrls)
+            imagesUrls.push(newUrls);
             images = imagesUrls;
           }
-
         }
-        console.log(preview, images)
-        // return InteriorsModel.findByIdAndUpdate(
-        //   _id,
-        //   {
-        //     $set: {
-        //       nameRu,
-        //       typeRu,
-        //       yearRu,
-        //       descriptionRu,
-        //       nameEn,
-        //       typeEn,
-        //       yearEn,
-        //       descriptionEn,
-        //       preview,
-        //       images
-        //     },
-        //   },
-        //   { new: true },
-        // );
+        console.log("FINISED", preview, images)
+        return InteriorsModel.findByIdAndUpdate(
+          _id,
+          {
+            $set: {
+              nameRu,
+              typeRu,
+              yearRu,
+              descriptionRu,
+              nameEn,
+              typeEn,
+              yearEn,
+              descriptionEn,
+              previewUrl: preview,
+              picturesUrl: images
+            },
+          },
+          { new: true },
+        );
       }
     }
   }

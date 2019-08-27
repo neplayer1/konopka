@@ -22,6 +22,7 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
   const {loading, error, data} = useQuery<T_GET_INTERIOR_BY_ID, T_VAR_GET_INTERIOR_BY_ID>(GET_INTERIOR_BY_ID, {
     variables: {_id: match.params.id}
   });
+  console.log(data)
   const {interiorById} = data!;
   const [updateInterior] = useMutation<TUpdateInterior>(UPDATE_INTERIOR);
   // const {current, updateInterior, match} = props;
