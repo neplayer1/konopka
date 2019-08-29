@@ -7,14 +7,14 @@ interface UserFile extends File {
 
 type TProps = {
   onChange: (files: FileList) => void;
-  onDeletePreview?: any;
+  onDelete?: any;
   label: string;
   files: UserFile[];
   multiple?: boolean;
   urls?: string[];
 }
 
-export const FileControl: FC<TProps> = ({files, urls, onChange, onDeletePreview, label, multiple}) => {
+export const FileControl: FC<TProps> = ({files, urls, onChange, onDelete, label, multiple}) => {
   const previews = useMemo(() => {
     return files.map(file => (
       <div className="dropzone_preview__item" key={file.name}>
@@ -25,11 +25,11 @@ export const FileControl: FC<TProps> = ({files, urls, onChange, onDeletePreview,
 
   const urlPreviews = useMemo(() => {
     return urls && urls.map(url => (
-      <div className="dropzone_preview__item" key={url} onClick={(e) => onDeletePreview(e)}>
+      <div className="dropzone_preview__item" key={url} onClick={(e) => onDelete(e)}>
         <img src={`http://localhost:3005/api/${url}`} data-url={url} alt={''}/>
       </div>
     ));
-  }, [urls, onDeletePreview]);
+  }, [urls, onDelete]);
 
   return (
     <div className="form-control form-control__dropzone">

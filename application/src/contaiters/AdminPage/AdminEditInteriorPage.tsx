@@ -130,7 +130,7 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
     }
   }, [multiFiles]);
 
-  const handleDeletePreview = useCallback((e) => {
+  const handleDeleteFile = useCallback((e) => {
     console.log(e.currentTarget, e.target.dataset.url);
     const removedUrl = e.target.dataset.url;
     const remIndex = picturesUrl.indexOf(removedUrl);
@@ -174,8 +174,8 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
           <div className="form-control form-control__button" onClick={update}>Update</div>
         </div>
         <div className="form__right">
-          <FileControl files={mainFile} urls={previewUrl} onChange={handleSetMainFile} onDeletePreview={handleDeletePreview} label="Add preview"/>
-          <FileControl files={multiFiles} urls={picturesUrl} onChange={handleSetProjectFiles} onDeletePreview={handleDeletePreview} label="Add project files" multiple={true}/>
+          <FileControl files={mainFile} urls={previewUrl} onChange={handleSetMainFile} label="Add preview"/>
+          <FileControl files={multiFiles} urls={picturesUrl} onChange={handleSetProjectFiles} onDelete={handleDeleteFile} label="Add project files" multiple={true}/>
         </div>
       </form>
     </div>

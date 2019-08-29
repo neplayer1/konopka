@@ -3,9 +3,10 @@ import {Header} from 'contaiters/Header/Header';
 import {Footer} from 'contaiters/Footer/Footer';
 import {IntlProvider} from 'hoc/hocIntlProvider';
 import ApolloClient from 'apollo-client';
-import { ApolloProvider } from '@apollo/react-hooks';
+import {ApolloProvider} from '@apollo/react-hooks';
 import {InMemoryCache} from "apollo-cache-inmemory";
 import AppBody from "contaiters/AppBody/AppBody";
+import {ModalProvider} from "hoc/hocModalProvider";
 
 const {createUploadLink} = require('apollo-upload-client');
 
@@ -19,12 +20,15 @@ const client = new ApolloClient({
 });
 
 const App: React.FC = () => {
+
   return (
     <ApolloProvider client={client}>
       <IntlProvider>
-        <Header/>
-        <AppBody/>
-        <Footer/>
+        <ModalProvider>
+          <Header/>
+          <AppBody/>
+          <Footer/>
+        </ModalProvider>
       </IntlProvider>
     </ApolloProvider>
   );

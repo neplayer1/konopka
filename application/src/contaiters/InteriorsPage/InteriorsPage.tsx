@@ -6,16 +6,17 @@ import {useQuery} from "@apollo/react-hooks";
 
 export const InteriorsPage: FC = () => {
   const {loading, error, data} = useQuery<T_GET_ALL_INTERIORS>(GET_ALL_INTERIORS);
-  const {interiors} = data!;
+  const interiors = null || (data && data.interiors);
 
   return useMemo(() => (
     <>
+      {!interiors && <div>{error && error.message}</div>}
       {
-        !loading &&
+        !loading && interiors &&
         <div className="interiors-page">
           <CatalogPage data={interiors} baseUrl={routes.interiors}/>
         </div>
       }
     </>
-  ), [interiors, loading])
+  ), [error, interiors, loading])
 };
