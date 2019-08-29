@@ -131,8 +131,8 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
   }, [multiFiles]);
 
   const handleDeleteFile = useCallback((e) => {
-    console.log(e.currentTarget, e.target.dataset.url);
-    const removedUrl = e.target.dataset.url;
+    console.log(e.currentTarget.nextSibling, e.target.nextSibling.src, multiFiles);
+    const removedUrl = e.target.nextSibling.dataset.url;
     const remIndex = picturesUrl.indexOf(removedUrl);
     if (remIndex !== -1) {
       const pictures = [...picturesUrl];
@@ -140,8 +140,11 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
       setPicturesUrl(pictures);
       const removedUrls = [...removedImagesUrls, ...deletedPictureUrl];
       setRemovedImagesUrls(removedUrls);
+    } else {
+      const newMultiFiles = multiFiles.filter(i => i.preview !== e.target.nextSibling.src);
+      setMultiFiles(() => newMultiFiles)
     }
-  }, [picturesUrl, removedImagesUrls]);
+  }, [multiFiles, picturesUrl, removedImagesUrls]);
 
   return (
     <div className="admin-page">

@@ -18,15 +18,21 @@ export const FileControl: FC<TProps> = ({files, urls, onChange, onDelete, label,
   const previews = useMemo(() => {
     return files.map(file => (
       <div className="dropzone_preview__item" key={file.name}>
-        <img src={file.preview} alt={''}/>
+        <div className="dropzone_preview_item__inner">
+          {onDelete && <div className="dropzone_preview_item__delete-btn" onClick={(e) => onDelete(e)}/>}
+          <img src={file.preview} alt={''}/>
+        </div>
       </div>
     ));
-  }, [files]);
+  }, [files, onDelete]);
 
   const urlPreviews = useMemo(() => {
     return urls && urls.map(url => (
-      <div className="dropzone_preview__item" key={url} onClick={(e) => onDelete(e)}>
-        <img src={`http://localhost:3005/api/${url}`} data-url={url} alt={''}/>
+      <div className="dropzone_preview__item" key={url}>
+        <div className="dropzone_preview_item__inner">
+          {onDelete && <div className="dropzone_preview_item__delete-btn" onClick={(e) => onDelete(e)}/>}
+          <img src={`http://localhost:3005/api/${url}`} data-url={url} alt={''}/>
+        </div>
       </div>
     ));
   }, [urls, onDelete]);
@@ -37,8 +43,8 @@ export const FileControl: FC<TProps> = ({files, urls, onChange, onDelete, label,
         <div className="form-control form-control__button">{label}</div>
       </InputFiles>
       <div className="dropzone__preview">
+        {previews.length !== 0 && !multiple ? '' : urlPreviews}
         {previews}
-        {urlPreviews}
       </div>
     </div>
   );

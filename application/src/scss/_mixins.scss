@@ -17,7 +17,7 @@
 }
 
 @mixin xs {
-    @include mq($app-xs + 1px){
+    @include mq($app-xs + 1px) {
         @content;
     }
 }
@@ -29,55 +29,55 @@
 }
 
 @mixin md {
-    @include mq($app-md + 1px){
+    @include mq($app-md + 1px) {
         @content;
     }
 }
 
 @mixin lg {
-    @include mq($app-lg + 1px){
+    @include mq($app-lg + 1px) {
         @content;
     }
 }
 
 @mixin xlg {
-    @include mq($app-xlg + 1px){
+    @include mq($app-xlg + 1px) {
         @content;
     }
 }
 
 @mixin xxlg {
-    @include mq($app-xxlg + 1px){
+    @include mq($app-xxlg + 1px) {
         @content;
     }
 }
 
 @mixin xxs-max {
-    @include mq($app-xxs, max){
+    @include mq($app-xxs, max) {
         @content;
     }
 }
 
 @mixin xs-max {
-    @include mq($app-xs, max){
+    @include mq($app-xs, max) {
         @content;
     }
 }
 
 @mixin sm-max {
-    @include mq($app-sm, max){
+    @include mq($app-sm, max) {
         @content;
     }
 }
 
 @mixin md-max {
-    @include mq($app-md, max){
+    @include mq($app-md, max) {
         @content;
     }
 }
 
 @mixin lg-max {
-    @include mq($app-lg, max){
+    @include mq($app-lg, max) {
         @content;
     }
 }
@@ -101,5 +101,128 @@
     }
     &:after {
         clear: both;
+    }
+}
+
+@function remove-nth($list, $index) {
+    $result: null;
+
+    @if type-of($index) != number {
+        @warn "$index: #{quote($index)} is not a number for `remove-nth`.";
+    } @else if $index == 0 {
+        @warn "List index 0 must be a non-zero integer for `remove-nth`.";
+    } @else if abs($index) > length($list) {
+        @warn "List index is #{$index} but list is only #{length($list)} item long for `remove-nth`.";
+    } @else {
+        $result: ();
+        $index: if($index < 0, length($list) + $index + 1, $index);
+
+        @for $i from 1 through length($list) {
+            @if $i != $index {
+                $result: append($result, nth($list, $i));
+            }
+        }
+    }
+
+    @return $result;
+}
+
+//берет 1й элемент листа
+@function first($list) {
+    @return nth($list, 1);
+}
+
+//берет последний элемент листа
+@function last($list) {
+    @return nth($list, length($list));
+}
+
+//превращает строку в лист
+@function to-list($value) {
+    @return if(type-of($value) != list, ($value,), $value);
+}
+
+@function getTransitionTypeProperties($property, $type) {
+    $duration: "";
+    $easing: "";
+    @if ($type == type_1) {
+        $duration: 0.1s;
+        $easing: ease-in-out;
+    } @else {
+        @warn "Типа #{$type} не существует!";
+        @error "Типа #{$type} не существует!";
+    }
+    @return $property $duration $easing;
+}
+
+@function getWillChangePropertys($arglist, $key) {
+    $val: ();
+    $map: keywords($arglist);
+    @if inspect($map)=='()' and length($arglist) > 0 {
+        @if type-of(nth($arglist,1))==map {
+            $map: nth($arglist, 1);
+        } @else {
+            @each $item in $arglist {
+                $list: "";
+                //проверяем есть ли задержка у анимации
+                @if length($item) == 2 {
+                    $item: first($item);
+                }
+                //проверяем это стандартная запись или вида свойство_тип
+                @if(type_of($item) == list) {
+                    $list: $item;
+                } @else {
+                    $list: getTransitionTypeProperties(str-slice($item, 0, -8), str-slice($item, -6));
+                }
+                @if(type-of($list)==list) {
+                    $item: first($list);
+                }
+                $val: append($val, nth($item, $key), comma);
+            }
+        }
+    }
+    @return $val;
+}
+
+@function getFinalTransitionProperties($arglist, $key) {
+    $val: ();
+    $map: keywords($arglist);
+    @if inspect($map)=='()' and length($arglist) > 0 {
+        @if type-of(nth($arglist,1))==map {
+            $map: nth($arglist, 1);
+        } @else {
+            @each $item in $arglist {
+                $list: "";
+                $delay: 0s;
+                //проверяем есть ли задержка у анимации
+                @if length($item) == 4 {
+                    $delay: nth($item, 4);
+                    $item: to-list($item);
+                    $item: remove-nth($item, length($item));
+                }
+                //проверяем есть ли задержка у анимации при записи вида свойство_тип
+                @if length($item) == 2 {
+                    $delay: nth($item, 2);
+                    $item: first($item);
+                }
+                //проверяем это стандартная запись или вида свойство_тип
+                @if (type_of($item) == list) {
+                    $list: $item;
+                } @else {
+                    $list: getTransitionTypeProperties(str-slice($item, 0, -8), str-slice($item, -6));
+                }
+                $val: append($val, $list $delay, comma);
+            }
+        }
+    }
+    @return $val;
+}
+
+@mixin transition($property...) {
+    @if (nth($property, 1) != none) {
+        will-change: getWillChangePropertys($property, 1);
+        transition: getFinalTransitionProperties($property, 1);
+    } @else {
+        transition: none;
     }
 }

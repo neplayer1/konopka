@@ -1,6 +1,10 @@
 $headerHeight_LG: 178px;
 $headerHeight_SM: 98px;
 
+$bg_type_1: background_type_1;
+$opacity_type_1: opacity_type_1;
+$color_type_1: color_type_1;
+
 $maxvw: 100vw;
 
 @mixin maxVW($maxvw) {
