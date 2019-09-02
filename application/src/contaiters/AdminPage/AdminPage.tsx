@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useEffect, useMemo} from 'react';
+import React, {FC, useCallback, useMemo} from 'react';
 import {GET_ALL_INTERIORS, T_GET_ALL_INTERIORS} from "queries/interiors";
 import {Link} from 'react-router-dom';
 import {routes} from "utils/routes";
@@ -10,6 +10,7 @@ import {useModal} from "hooks/useModal";
 export const AdminPage: FC = () => {
   const {loading: loadingInteriors, error: errorInteriors, data: dataInteriors} = useQuery<T_GET_ALL_INTERIORS>(GET_ALL_INTERIORS);
   const {loading: loadingFurniture, error: errorFurniture, data: dataFurniture} = useQuery<T_GET_ALL_FURNITURE>(GET_ALL_FURNITURE);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [deleteInterior, { loading: deleteLoading, error: deleteError, called: deleteCalled }] = useMutation(DELETE_INTERIOR, {onCompleted: () => openModal(false)});
   const {initModal, openModal} = useModal();
 

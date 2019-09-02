@@ -7,6 +7,7 @@ import {ApolloProvider} from '@apollo/react-hooks';
 import {InMemoryCache} from "apollo-cache-inmemory";
 import AppBody from "contaiters/AppBody/AppBody";
 import {ModalProvider} from "hoc/hocModalProvider";
+import {UploadImagesProvider} from "hoc/hocUploadFiles";
 
 const {createUploadLink} = require('apollo-upload-client');
 
@@ -25,9 +26,11 @@ const App: React.FC = () => {
     <ApolloProvider client={client}>
       <IntlProvider>
         <ModalProvider>
-          <Header/>
-          <AppBody/>
-          <Footer/>
+          <UploadImagesProvider>
+            <Header/>
+            <AppBody/>
+            <Footer/>
+          </UploadImagesProvider>
         </ModalProvider>
       </IntlProvider>
     </ApolloProvider>

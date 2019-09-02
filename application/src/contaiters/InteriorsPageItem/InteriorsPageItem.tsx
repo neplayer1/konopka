@@ -13,12 +13,14 @@ type TProps = {
 
 export const InteriorsPageItem: FC<TProps> = (props) => {
   const {match, history} = props;
-  const {loading, error, data} = useQuery<T_GET_INTERIOR_BY_ID, T_VAR_GET_INTERIOR_BY_ID>(GET_INTERIOR_BY_ID, {
+  const {loading, data} = useQuery<T_GET_INTERIOR_BY_ID, T_VAR_GET_INTERIOR_BY_ID>(GET_INTERIOR_BY_ID, {
     variables: {_id: match.params.id}
   });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const {loading: loadingPrev, error: errorPrev, data: dataPrev} = useQuery<T_GET_PREV_INTERIOR_BY_ID, T_VAR_PREV_INTERIOR_BY_ID>(GET_PREV_INTERIOR_BY_ID, {
     variables: {_id: match.params.id}
   });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const {loading: loadingNext, error: errorNext, data: dataNext} = useQuery<T_GET_NEXT_INTERIOR_BY_ID, T_VAR_NEXT_INTERIOR_BY_ID>(GET_NEXT_INTERIOR_BY_ID, {
     variables: {_id: match.params.id}
   });

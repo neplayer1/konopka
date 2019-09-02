@@ -2,6 +2,8 @@ import React, {FC, useCallback, useState} from 'react';
 import {FileControl} from "components/FileControl/FileControl";
 import {useMutation} from "@apollo/react-hooks";
 import {ADD_INTERIOR} from "queries/mutations";
+import {useContextStrict} from "hooks/useContextStrict";
+import {UploadFilesContext} from "context/ctxUploadFiles";
 
 interface UserFile extends File {
   preview: string;
@@ -9,10 +11,9 @@ interface UserFile extends File {
 
 export const AdminAddInteriorPage: FC<any> = (props) => {
   console.log('RENDER ADD_PAGE', props);
-  const {mutate} = props;
-  const [addInterior, {data}] = useMutation(ADD_INTERIOR);
+  const {updatedFiles: addedFiles, setUpdatedFiles: setAddedFiles} = useContextStrict(UploadFilesContext);
+  const [addInterior] = useMutation(ADD_INTERIOR);
   const [mainFile, setMainFile] = useState<UserFile[]>([]);
-  const [multiFiles, setMultiFiles] = useState<UserFile[]>([]);
 
   const [nameRu, setNameRu] = useState('');
   const [nameEn, setNameEn] = useState('');
@@ -49,15 +50,12 @@ export const AdminAddInteriorPage: FC<any> = (props) => {
   }, []);
 
   const add = useCallback(() => {
-    const preview = mainFile;
-    const images = multiFiles;
-    console.log(preview, images);
     const newInterior = {
-      variables: {nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, preview, images},
+      variables: {nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, preview: mainFile, images: addedFiles},
       // refetchQueries: [ { query: GET_ALL_INTERIORS }]
     }
     addInterior(newInterior);
-  }, [mainFile, multiFiles, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, addInterior]);
+  }, [mainFile, addedFiles, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, addInterior]);
 
   const handleSetMainFile = useCallback((file) => {
     if (file.length !== 0) {
@@ -74,16 +72,16 @@ export const AdminAddInteriorPage: FC<any> = (props) => {
     }));
 
     const uniqueFiles = filesWithPreview.reduce((acc: UserFile[], el: UserFile) => {
-      if (!multiFiles.find(({lastModified}) => el.lastModified === lastModified)) {
+      if (!(addedFiles as UserFile[]).find(({lastModified}) => el.lastModified === lastModified)) {
         acc.push(el);
       }
       return acc;
     }, []);
 
     if (uniqueFiles.length !== 0) {
-      setMultiFiles([...multiFiles, ...uniqueFiles]);
+      setAddedFiles([...addedFiles, ...uniqueFiles]);
     }
-  }, [multiFiles]);
+  }, [addedFiles, setAddedFiles]);
 
   return (
     <div className="admin-page">
@@ -117,7 +115,7 @@ export const AdminAddInteriorPage: FC<any> = (props) => {
         </div>
         <div className="form__right">
           <FileControl files={mainFile} onChange={handleSetMainFile} label="Add preview"/>
-          <FileControl files={multiFiles} onChange={handleSetProjectFiles} label="Add project files" multiple={true}/>
+          <FileControl files={addedFiles} onChange={handleSetProjectFiles} label="Add project files" multiple={true}/>
         </div>
       </form>
     </div>

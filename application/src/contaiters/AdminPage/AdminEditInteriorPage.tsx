@@ -6,6 +6,8 @@ import {TInteriorMatch} from "utils/routes";
 import {match} from "react-router";
 import {GET_INTERIOR_BY_ID, T_GET_INTERIOR_BY_ID, T_VAR_GET_INTERIOR_BY_ID} from "queries/interiors";
 import {useMutation, useQuery} from "@apollo/react-hooks";
+import {useContextStrict} from "hooks/useContextStrict";
+import {UploadFilesContext} from "context/ctxUploadFiles";
 
 interface UserFile extends File {
   preview: string;
@@ -18,7 +20,9 @@ type TProps = {
 
 export const AdminEditInteriorPage: FC<TProps> = (props) => {
   console.log('RENDER EDIT_PAGE', props);
+  const {updatedFiles, setUpdatedFiles, removedImagesUrls} = useContextStrict(UploadFilesContext);
   const {match} = props;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const {loading, error, data} = useQuery<T_GET_INTERIOR_BY_ID, T_VAR_GET_INTERIOR_BY_ID>(GET_INTERIOR_BY_ID, {
     variables: {_id: match.params.id}
   });
@@ -36,9 +40,8 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
   const [descriptionEn, setDescriptionEn] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [picturesUrl, setPicturesUrl] = useState<string[]>([]);
-  const [removedImagesUrls, setRemovedImagesUrls] = useState<string[]>([]);
 
-  const [updatedImages, setUpdatedFiles] = useState<(UserFile | string)[]>([]);
+  console.log("updatedFiles", updatedFiles);
 
   useEffect(() => {
     setUpdatedFiles(picturesUrl);
@@ -54,7 +57,7 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
       setPreviewUrl(interiorById.previewUrl);
       setPicturesUrl(interiorById.picturesUrl);
     }
-  }, [interiorById, picturesUrl]);
+  }, [interiorById, picturesUrl, setUpdatedFiles]);
 
   const handleChangeNameRu = useCallback((event) => {
     setNameRu(event.target.value);
@@ -82,7 +85,7 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
   }, []);
 
   const update = useCallback(() => {
-    const imagesOrder = updatedImages.reduce((acc: any, item) => {
+    const imagesOrder = updatedFiles.reduce((acc: any, item) => {
       if (typeof item === "string") {
         acc.push(item)
       } else {
@@ -90,8 +93,7 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
       }
       return acc;
     }, []);
-    const addedFiles = updatedImages.filter(i => typeof i !== "string");
-    console.log(addedFiles)
+    const addedFiles = updatedFiles.filter(i => typeof i !== "string");
 
     const updatedInterior = {
       variables: {
@@ -111,9 +113,8 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
         removedImagesUrls,
       }
     }
-    console.log(updatedInterior);
     updateInterior(updatedInterior);
-  }, [match.params.id, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, previewUrl, mainFile, updatedImages, removedImagesUrls, updateInterior]);
+  }, [match.params.id, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, previewUrl, mainFile, updatedFiles, removedImagesUrls, updateInterior]);
 
   const handleSetMainFile = useCallback((file) => {
     if (file.length !== 0) {
@@ -129,7 +130,7 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
       preview: URL.createObjectURL(file)
     }));
     const uniqueFiles = filesWithPreview.reduce((acc: (string | UserFile)[], el: UserFile | string) => {
-      const isFileFound = updatedImages.find((item: string | UserFile) => {
+      const isFileFound = updatedFiles.find((item: string | UserFile) => {
         if (typeof item !== "string" && typeof el !== "string") {
           return el.lastModified === item.lastModified;
         }
@@ -142,79 +143,10 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
     }, []);
 
     if (uniqueFiles.length !== 0) {
-      setUpdatedFiles([...updatedImages, ...uniqueFiles])
+      setUpdatedFiles([...updatedFiles, ...uniqueFiles])
     }
 
-  }, [updatedImages]);
-
-  const handleDeleteFile = useCallback((e) => {
-    const removedUrl = e.target.nextSibling.dataset.url;
-    const remIndex = updatedImages.indexOf(removedUrl);
-    if (remIndex !== -1) {
-      const pictures = [...updatedImages];
-      const deletedPictures = pictures.splice(remIndex, 1);
-      const deletedPicturesUrl = deletedPictures.filter(i => typeof i === "string");
-      setUpdatedFiles(pictures);
-      const removedUrls = [...removedImagesUrls, ...deletedPicturesUrl];
-      setRemovedImagesUrls(removedUrls as string[]);
-    } else {
-      const newResultFiles = updatedImages.filter(item => {
-        if (typeof item !== "string") {
-          return item.preview !== e.target.nextSibling.src
-        }
-        return true;
-      });
-      setUpdatedFiles(() => newResultFiles);
-    }
-  }, [removedImagesUrls, updatedImages]);
-
-  //DnD
-
-  const swapPictures = useCallback((e, i, j) => {
-    console.log(i, j, updatedImages[i], updatedImages[j]);
-    [updatedImages[i], updatedImages[j]] = [updatedImages[j], updatedImages[i]];
-    setUpdatedFiles([...updatedImages]);
-  }, [updatedImages]);
-
-  console.log("updatedImages", updatedImages);
-
-  const handleDragStart = useCallback((e) => {
-    const dragImage = document.createElement('img');
-    dragImage.classList.add('drag-image');
-    dragImage.src = e.target.src;
-    document.body.appendChild(dragImage);
-
-    const el = e.target.closest(".dropzone_preview__item");
-    el.classList.add('dropzone_preview__item--dragged');
-    e.dataTransfer.effectAllowed = 'move';
-    if (e.target.dataset.url) {
-      e.dataTransfer.setData('text', e.target.dataset.url);
-    } else if (e.target.dataset.index) {
-      e.dataTransfer.setData('text', e.target.dataset.index);
-    }
-    e.dataTransfer.setDragImage(dragImage, 0, 0);
-
-    return true;
-  }, []);
-
-  const handleDrop = useCallback((e) => {
-    if (e.stopPropagation) {
-      e.stopPropagation();
-    }
-    let i;
-    if (e.dataTransfer.getData('text')) {
-      if (e.target.dataset.url) {
-        i = updatedImages.indexOf(e.target.dataset.url);
-      } else if (e.target.dataset.index) {
-        i = +e.target.dataset.index;
-      }
-      const indexUrl = updatedImages.indexOf(e.dataTransfer.getData('text'));
-      const j = indexUrl === -1 ? +e.dataTransfer.getData('text') : indexUrl;
-      swapPictures(e, i, j);
-    }
-
-    return false;
-  }, [updatedImages, swapPictures]);
+  }, [setUpdatedFiles, updatedFiles]);
 
   return (
     <div className="admin-page">
@@ -248,11 +180,9 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
         </div>
         <div className="form__right">
           <FileControl files={mainFile} previewUrl={previewUrl} onChange={handleSetMainFile} label="Add preview"/>
-          <FileControl files={updatedImages}
-                       onChange={handleSetProjectFiles} onDelete={handleDeleteFile}
+          <FileControl files={updatedFiles}
+                       onChange={handleSetProjectFiles}
                        label="Add project files" multiple={true}
-                       onDragStart={handleDragStart}
-                       onDrop={handleDrop}
           />
         </div>
       </form>
