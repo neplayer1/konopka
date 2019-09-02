@@ -22,12 +22,9 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
   const {loading, error, data} = useQuery<T_GET_INTERIOR_BY_ID, T_VAR_GET_INTERIOR_BY_ID>(GET_INTERIOR_BY_ID, {
     variables: {_id: match.params.id}
   });
-  console.log(data)
   const {interiorById} = data!;
   const [updateInterior] = useMutation<TUpdateInterior>(UPDATE_INTERIOR);
-  // const {current, updateInterior, match} = props;
   const [mainFile, setMainFile] = useState<UserFile[]>([]);
-  const [multiFiles, setMultiFiles] = useState<UserFile[]>([]);
 
   const [nameRu, setNameRu] = useState('');
   const [nameEn, setNameEn] = useState('');
@@ -37,11 +34,14 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
   const [yearEn, setYearEn] = useState('');
   const [descriptionRu, setDescriptionRu] = useState('');
   const [descriptionEn, setDescriptionEn] = useState('');
-  const [previewUrl, setPreviewUrl] = useState<string[]>([]);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
   const [picturesUrl, setPicturesUrl] = useState<string[]>([]);
   const [removedImagesUrls, setRemovedImagesUrls] = useState<string[]>([]);
 
+  const [updatedImages, setUpdatedFiles] = useState<(UserFile | string)[]>([]);
+
   useEffect(() => {
+    setUpdatedFiles(picturesUrl);
     if (interiorById) {
       setNameRu(interiorById.nameRu);
       setNameEn(interiorById.nameEn);
@@ -51,10 +51,10 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
       setYearEn(interiorById.yearEn);
       setDescriptionRu(interiorById.descriptionRu);
       setDescriptionEn(interiorById.descriptionEn);
-      setPreviewUrl([interiorById.previewUrl]);
+      setPreviewUrl(interiorById.previewUrl);
       setPicturesUrl(interiorById.picturesUrl);
     }
-  }, [interiorById]);
+  }, [interiorById, picturesUrl]);
 
   const handleChangeNameRu = useCallback((event) => {
     setNameRu(event.target.value);
@@ -82,6 +82,17 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
   }, []);
 
   const update = useCallback(() => {
+    const imagesOrder = updatedImages.reduce((acc: any, item) => {
+      if (typeof item === "string") {
+        acc.push(item)
+      } else {
+        acc.push('empty');
+      }
+      return acc;
+    }, []);
+    const addedFiles = updatedImages.filter(i => typeof i !== "string");
+    console.log(addedFiles)
+
     const updatedInterior = {
       variables: {
         _id: match.params.id,
@@ -93,16 +104,16 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
         typeEn,
         yearEn,
         descriptionEn,
-        previewUrl: previewUrl[0],
+        previewUrl: previewUrl,
         newPreview: mainFile,
-        imagesUrls: picturesUrl,
-        newImages: multiFiles,
+        imagesOrder,
+        addedFiles,
         removedImagesUrls,
       }
     }
     console.log(updatedInterior);
     updateInterior(updatedInterior);
-  }, [match.params.id, updateInterior, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, previewUrl, mainFile, picturesUrl, multiFiles, removedImagesUrls]);
+  }, [match.params.id, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, previewUrl, mainFile, updatedImages, removedImagesUrls, updateInterior]);
 
   const handleSetMainFile = useCallback((file) => {
     if (file.length !== 0) {
@@ -117,34 +128,93 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
     const filesWithPreview = Array.from(files).map(file => Object.assign(file, {
       preview: URL.createObjectURL(file)
     }));
-
-    const uniqueFiles = filesWithPreview.reduce((acc: UserFile[], el: UserFile) => {
-      if (!multiFiles.find(({lastModified}) => el.lastModified === lastModified)) {
+    const uniqueFiles = filesWithPreview.reduce((acc: (string | UserFile)[], el: UserFile | string) => {
+      const isFileFound = updatedImages.find((item: string | UserFile) => {
+        if (typeof item !== "string" && typeof el !== "string") {
+          return el.lastModified === item.lastModified;
+        }
+        return false;
+      });
+      if (!isFileFound) {
         acc.push(el);
       }
       return acc;
     }, []);
 
     if (uniqueFiles.length !== 0) {
-      setMultiFiles([...multiFiles, ...uniqueFiles]);
+      setUpdatedFiles([...updatedImages, ...uniqueFiles])
     }
-  }, [multiFiles]);
+
+  }, [updatedImages]);
 
   const handleDeleteFile = useCallback((e) => {
-    console.log(e.currentTarget.nextSibling, e.target.nextSibling.src, multiFiles);
     const removedUrl = e.target.nextSibling.dataset.url;
-    const remIndex = picturesUrl.indexOf(removedUrl);
+    const remIndex = updatedImages.indexOf(removedUrl);
     if (remIndex !== -1) {
-      const pictures = [...picturesUrl];
-      const deletedPictureUrl = pictures.splice(remIndex, 1);
-      setPicturesUrl(pictures);
-      const removedUrls = [...removedImagesUrls, ...deletedPictureUrl];
-      setRemovedImagesUrls(removedUrls);
+      const pictures = [...updatedImages];
+      const deletedPictures = pictures.splice(remIndex, 1);
+      const deletedPicturesUrl = deletedPictures.filter(i => typeof i === "string");
+      setUpdatedFiles(pictures);
+      const removedUrls = [...removedImagesUrls, ...deletedPicturesUrl];
+      setRemovedImagesUrls(removedUrls as string[]);
     } else {
-      const newMultiFiles = multiFiles.filter(i => i.preview !== e.target.nextSibling.src);
-      setMultiFiles(() => newMultiFiles)
+      const newResultFiles = updatedImages.filter(item => {
+        if (typeof item !== "string") {
+          return item.preview !== e.target.nextSibling.src
+        }
+        return true;
+      });
+      setUpdatedFiles(() => newResultFiles);
     }
-  }, [multiFiles, picturesUrl, removedImagesUrls]);
+  }, [removedImagesUrls, updatedImages]);
+
+  //DnD
+
+  const swapPictures = useCallback((e, i, j) => {
+    console.log(i, j, updatedImages[i], updatedImages[j]);
+    [updatedImages[i], updatedImages[j]] = [updatedImages[j], updatedImages[i]];
+    setUpdatedFiles([...updatedImages]);
+  }, [updatedImages]);
+
+  console.log("updatedImages", updatedImages);
+
+  const handleDragStart = useCallback((e) => {
+    const dragImage = document.createElement('img');
+    dragImage.classList.add('drag-image');
+    dragImage.src = e.target.src;
+    document.body.appendChild(dragImage);
+
+    const el = e.target.closest(".dropzone_preview__item");
+    el.classList.add('dropzone_preview__item--dragged');
+    e.dataTransfer.effectAllowed = 'move';
+    if (e.target.dataset.url) {
+      e.dataTransfer.setData('text', e.target.dataset.url);
+    } else if (e.target.dataset.index) {
+      e.dataTransfer.setData('text', e.target.dataset.index);
+    }
+    e.dataTransfer.setDragImage(dragImage, 0, 0);
+
+    return true;
+  }, []);
+
+  const handleDrop = useCallback((e) => {
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    }
+    let i;
+    if (e.dataTransfer.getData('text')) {
+      if (e.target.dataset.url) {
+        i = updatedImages.indexOf(e.target.dataset.url);
+      } else if (e.target.dataset.index) {
+        i = +e.target.dataset.index;
+      }
+      const indexUrl = updatedImages.indexOf(e.dataTransfer.getData('text'));
+      const j = indexUrl === -1 ? +e.dataTransfer.getData('text') : indexUrl;
+      swapPictures(e, i, j);
+    }
+
+    return false;
+  }, [updatedImages, swapPictures]);
 
   return (
     <div className="admin-page">
@@ -177,8 +247,13 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
           <div className="form-control form-control__button" onClick={update}>Update</div>
         </div>
         <div className="form__right">
-          <FileControl files={mainFile} urls={previewUrl} onChange={handleSetMainFile} label="Add preview"/>
-          <FileControl files={multiFiles} urls={picturesUrl} onChange={handleSetProjectFiles} onDelete={handleDeleteFile} label="Add project files" multiple={true}/>
+          <FileControl files={mainFile} previewUrl={previewUrl} onChange={handleSetMainFile} label="Add preview"/>
+          <FileControl files={updatedImages}
+                       onChange={handleSetProjectFiles} onDelete={handleDeleteFile}
+                       label="Add project files" multiple={true}
+                       onDragStart={handleDragStart}
+                       onDrop={handleDrop}
+          />
         </div>
       </form>
     </div>

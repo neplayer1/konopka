@@ -99,8 +99,8 @@ const InteriorEditMutateType = new GraphQLObjectType({
     descriptionEn: { type: GraphQLString },
     previewUrl: { type: GraphQLString },
     newPreview: { type: GraphQLUpload },
-    imagesUrls: { type: new GraphQLList(GraphQLString) },
-    newImages: { type: GraphQLUpload },
+    imagesOrder: { type: new GraphQLList(GraphQLString) },
+    addedFiles: { type: new GraphQLList(GraphQLUpload) },
     removedImagesUrls: { type: new GraphQLList(GraphQLString) },
   })
 });
@@ -194,13 +194,14 @@ const Mutation = new GraphQLObjectType({
         descriptionEn: { type: GraphQLString },
         previewUrl: { type: GraphQLString },
         newPreview: { type: GraphQLUpload },
-        imagesUrls: { type: new GraphQLList(GraphQLString) },
-        newImages: { type: GraphQLUpload },
+        imagesOrder: { type: new GraphQLList(GraphQLString) },
+        addedFiles: { type: new GraphQLList(GraphQLUpload) },
         removedImagesUrls: { type: new GraphQLList(GraphQLString) },
       },
-      async resolve(parent, { _id, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, previewUrl, newPreview, imagesUrls, newImages, removedImagesUrls }) {
+      async resolve(parent, { _id, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, previewUrl, newPreview, imagesOrder, addedFiles, removedImagesUrls }) {
+        console.log(imagesOrder)
         let preview = previewUrl;
-        let images = imagesUrls;
+        let picturesUrl = [];
         // смотрим не изменилось ли превью
         if (newPreview.length !== 0) {
           // загружаем новое
@@ -216,17 +217,22 @@ const Mutation = new GraphQLObjectType({
           })
         }
         // смотрим есть ли новые картинки
-        if (newImages.length !== 0) {
+        if (addedFiles.length !== 0) {
           // загружаем их
-          const newUrls = await processUpload(newImages);
-          if (typeof newUrls === "object") {
-            images = [...imagesUrls, ...newUrls];
-          } else {
-            imagesUrls.push(newUrls);
-            images = imagesUrls;
-          }
+          let newUrls = await processUpload(addedFiles);
+          newUrls = [...newUrls];
+          imagesOrder.forEach(name => {
+            if (name === 'empty') {
+              picturesUrl.push(newUrls[0]);
+              newUrls.shift();
+            } else {
+              picturesUrl.push(name)
+            }
+          })
+        } else {
+          picturesUrl = imagesOrder;
         }
-        console.log("FINISED", preview, images)
+        console.log("FINISED UPDATE");
         return InteriorsModel.findByIdAndUpdate(
           _id,
           {
@@ -240,7 +246,7 @@ const Mutation = new GraphQLObjectType({
               yearEn,
               descriptionEn,
               previewUrl: preview,
-              picturesUrl: images
+              picturesUrl
             },
           },
           { new: true },
