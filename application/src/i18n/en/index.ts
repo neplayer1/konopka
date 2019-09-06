@@ -2,9 +2,7 @@ import { TIntlDictionary, TIntl } from 'types/i18n';
 
 const dictionary: TIntlDictionary = {
   changeLangLabel: 'ru',
-
   slogan: 'Beauty in simplicity',
-
   slogans: [
     'Beauty\nin simplicity',
     'Good design\nis aesthetic',
@@ -12,17 +10,28 @@ const dictionary: TIntlDictionary = {
     'Good design\nis honest',
     'Good design\ndoesn\'t get old',
   ],
-
   nav: {
     interiors: 'Interiors',
     furniture: 'Furniture',
     about: 'About',
   },
-
   writeMe: {
     left: 'Need project?',
     right: 'Write to me'
-  }
+  },
+  validation: {
+    required: 'Required field'
+  },
+  ui: {
+    buttons: {
+      addPreview: 'Add preview',
+      addImages: 'Add images',
+    },
+    submit: {
+      add: 'Add',
+      update: 'Update',
+    }
+  },
 }
 
 export const enIntl: TIntl = {

@@ -7,7 +7,7 @@ import {match} from "react-router";
 import {GET_INTERIOR_BY_ID, T_GET_INTERIOR_BY_ID, T_VAR_GET_INTERIOR_BY_ID} from "queries/interiors";
 import {useMutation, useQuery} from "@apollo/react-hooks";
 import {useContextStrict} from "hooks/useContextStrict";
-import {UploadFilesContext} from "context/ctxUploadFiles";
+import {UploadMultiFilesContext} from "context/ctxUploadMultiFiles";
 
 interface UserFile extends File {
   preview: string;
@@ -20,7 +20,7 @@ type TProps = {
 
 export const AdminEditInteriorPage: FC<TProps> = (props) => {
   console.log('RENDER EDIT_PAGE', props);
-  const {updatedFiles, setUpdatedFiles, removedImagesUrls} = useContextStrict(UploadFilesContext);
+  const {multiFiles, setMultiFiles, removedImagesUrls} = useContextStrict(UploadMultiFilesContext);
   const {match} = props;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const {loading, error, data} = useQuery<T_GET_INTERIOR_BY_ID, T_VAR_GET_INTERIOR_BY_ID>(GET_INTERIOR_BY_ID, {
@@ -28,7 +28,7 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
   });
   const {interiorById} = data!;
   const [updateInterior] = useMutation<TUpdateInterior>(UPDATE_INTERIOR);
-  const [mainFile, setMainFile] = useState<UserFile[]>([]);
+  const [mainFile] = useState<UserFile[]>([]);
 
   const [nameRu, setNameRu] = useState('');
   const [nameEn, setNameEn] = useState('');
@@ -41,10 +41,10 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [picturesUrl, setPicturesUrl] = useState<string[]>([]);
 
-  console.log("updatedFiles", updatedFiles);
+  console.log("multiFiles", multiFiles);
 
   useEffect(() => {
-    setUpdatedFiles(picturesUrl);
+    setMultiFiles(picturesUrl);
     if (interiorById) {
       setNameRu(interiorById.nameRu);
       setNameEn(interiorById.nameEn);
@@ -57,7 +57,7 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
       setPreviewUrl(interiorById.previewUrl);
       setPicturesUrl(interiorById.picturesUrl);
     }
-  }, [interiorById, picturesUrl, setUpdatedFiles]);
+  }, [interiorById, picturesUrl, setMultiFiles]);
 
   const handleChangeNameRu = useCallback((event) => {
     setNameRu(event.target.value);
@@ -85,7 +85,7 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
   }, []);
 
   const update = useCallback(() => {
-    const imagesOrder = updatedFiles.reduce((acc: any, item) => {
+    const imagesOrder = multiFiles.reduce((acc: any, item) => {
       if (typeof item === "string") {
         acc.push(item)
       } else {
@@ -93,7 +93,7 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
       }
       return acc;
     }, []);
-    const addedFiles = updatedFiles.filter(i => typeof i !== "string");
+    const addedFiles = multiFiles.filter(i => typeof i !== "string");
 
     const updatedInterior = {
       variables: {
@@ -114,39 +114,7 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
       }
     }
     updateInterior(updatedInterior);
-  }, [match.params.id, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, previewUrl, mainFile, updatedFiles, removedImagesUrls, updateInterior]);
-
-  const handleSetMainFile = useCallback((file) => {
-    if (file.length !== 0) {
-      const fileWithPreview = Object.assign(file[0], {
-        preview: URL.createObjectURL(file[0])
-      });
-      setMainFile([fileWithPreview]);
-    }
-  }, []);
-
-  const handleSetProjectFiles = useCallback((files: FileList) => {
-    const filesWithPreview = Array.from(files).map(file => Object.assign(file, {
-      preview: URL.createObjectURL(file)
-    }));
-    const uniqueFiles = filesWithPreview.reduce((acc: (string | UserFile)[], el: UserFile | string) => {
-      const isFileFound = updatedFiles.find((item: string | UserFile) => {
-        if (typeof item !== "string" && typeof el !== "string") {
-          return el.lastModified === item.lastModified;
-        }
-        return false;
-      });
-      if (!isFileFound) {
-        acc.push(el);
-      }
-      return acc;
-    }, []);
-
-    if (uniqueFiles.length !== 0) {
-      setUpdatedFiles([...updatedFiles, ...uniqueFiles])
-    }
-
-  }, [setUpdatedFiles, updatedFiles]);
+  }, [match.params.id, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, previewUrl, mainFile, multiFiles, removedImagesUrls, updateInterior]);
 
   return (
     <div className="admin-page">
@@ -179,11 +147,8 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
           <div className="form-control form-control__button" onClick={update}>Update</div>
         </div>
         <div className="form__right">
-          <FileControl files={mainFile} previewUrl={previewUrl} onChange={handleSetMainFile} label="Add preview"/>
-          <FileControl files={updatedFiles}
-                       onChange={handleSetProjectFiles}
-                       label="Add project files" multiple={true}
-          />
+          <FileControl previewUrl={previewUrl} label="Add preview"/>
+          <FileControl label="Add project files" multiple={true}/>
         </div>
       </form>
     </div>
