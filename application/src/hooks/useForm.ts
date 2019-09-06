@@ -44,6 +44,11 @@ export const useForm = <TValues>(params: IParams<TValues>) => {
   // Состояние хранит результат валидации значений формы.
   const [validation, setValidation] = React.useState<TFormValidation<TValues>>({});
 
+  // Если initialValues задаются ассинхронно
+  React.useEffect(() => {
+    setValues(initialValues)
+  }, [initialValues]);
+
   // Эффект следит за значениями формы и, при наличии
   // моментального валидатора, валидирует значения.
   React.useLayoutEffect(() => {
@@ -53,7 +58,7 @@ export const useForm = <TValues>(params: IParams<TValues>) => {
         ...trimEmptyFields(immediateValidator(values))
       }));
     }
-  }, [values, immediateValidator]);
+  }, [values, immediateValidator, initialValues]);
 
   // Хэндлер изменений инпута.
   // При наличии санитизатора проводит санитизацию
@@ -107,10 +112,6 @@ export const useForm = <TValues>(params: IParams<TValues>) => {
         let nextValidation = prevValidation;
 
         if (validator) {
-          // При наличии валидатора производится смешивание валидации
-          // от валидатора и предыдущей валидации с приоритетом для
-          // последней.
-          // todo: спросить почему для последней приоритет
           nextValidation = {
             ...trimEmptyFields(validator(values)),
           };

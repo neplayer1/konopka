@@ -22,7 +22,7 @@ const storeUpload = async (stream) => {
 };
 
 const processUpload = async (upload) => {
-  if (upload.length !== 1) {
+  if (Array.isArray(upload) && upload.length !== 1) {
     return await upload.reduce(async (acc, file) => {
       const accumulator = await acc;
       const { createReadStream } = await file;
@@ -32,7 +32,10 @@ const processUpload = async (upload) => {
       return Promise.resolve(accumulator);
     }, []);
   } else {
-    const { createReadStream } = await upload[0];
+    if (Array.isArray(upload)) {
+      upload = upload[0];
+    }
+    const { createReadStream } = await upload;
     const stream = createReadStream();
     const { imgPath } = await storeUpload(stream);
     return imgPath;
@@ -199,11 +202,11 @@ const Mutation = new GraphQLObjectType({
         removedImagesUrls: { type: new GraphQLList(GraphQLString) },
       },
       async resolve(parent, { _id, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, previewUrl, newPreview, imagesOrder, addedFiles, removedImagesUrls }) {
-        console.log(imagesOrder)
+        console.log(previewUrl, newPreview, imagesOrder, addedFiles, removedImagesUrls)
         let preview = previewUrl;
         let picturesUrl = [];
         // смотрим не изменилось ли превью
-        if (newPreview.length !== 0) {
+        if (typeof newPreview !== "string") {
           // загружаем новое
           preview = await processUpload(newPreview);
           // удаляем старое
@@ -220,9 +223,14 @@ const Mutation = new GraphQLObjectType({
         if (addedFiles.length !== 0) {
           // загружаем их
           let newUrls = await processUpload(addedFiles);
-          newUrls = [...newUrls];
+          if (Array.isArray(newUrls)) {
+            newUrls = [...newUrls];
+          } else {
+            newUrls = [newUrls];
+          }
           imagesOrder.forEach(name => {
             if (name === 'empty') {
+              console.log(newUrls)
               picturesUrl.push(newUrls[0]);
               newUrls.shift();
             } else {
