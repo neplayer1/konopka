@@ -16,6 +16,7 @@ export type TIntlDictionary = {
     left: string;
     right: string;
   }
+  about: string;
   validation: {
     required: string;
   }

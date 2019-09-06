@@ -67,12 +67,12 @@ export const AdminPage: FC = () => {
         <div className="articles__list">
           <div className="articles_list__title">Интерьеры</div>
           {!loadingInteriors && listInteriors}
-          <Link className="form-control__button" to={routes.adminAddInterior()}>Добавить</Link>
+          {!errorInteriors && <Link className="form-control__button" to={routes.adminAddInterior()}>Добавить</Link>}
         </div>
         <div className="articles__list">
           <div className="articles_list__title">Мебель</div>
           {!loadingFurniture && listFurniture}
-          <div className="form-control__button">Добавить</div>
+          {!errorFurniture && <div className="form-control__button">Добавить</div>}
         </div>
       </div>
     </div>

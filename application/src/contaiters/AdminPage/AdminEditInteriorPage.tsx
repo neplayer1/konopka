@@ -59,8 +59,8 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
   const {loading, error, data} = useQuery<T_GET_INTERIOR_BY_ID, T_VAR_GET_INTERIOR_BY_ID>(GET_INTERIOR_BY_ID, {
     variables: {_id: match.params.id}
   });
-  const {interiorById} = data!;
-  const [updateInterior] = useMutation<TUpdateInterior>(UPDATE_INTERIOR);
+  const interiorById = null || (data && data.interiorById);
+  const [updateInterior, {loading: mutationLoading, error: mutationError}] = useMutation<TUpdateInterior>(UPDATE_INTERIOR);
   const [initialValues, setInitialValues] = useState<TInteriorEditFormValues>({
     nameRu: '',
     nameEn: '',
@@ -134,24 +134,30 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
   }, [multiFiles, values, match.params.id, previewUrl, singleFile, removedImagesUrls, validate, updateInterior]);
 
   return (
-    <div className="admin-page">
-      <form className="form" action="">
-        <div className="form__left">
-          <FormInput name="nameRu" placeholder='Имя' value={values.nameRu} onChange={onChange} errorMessage={validation.nameRu}/>
-          <FormInput name="nameEn" placeholder='Name' value={values.nameEn} onChange={onChange} errorMessage={validation.nameEn}/>
-          <FormInput name="typeRu" placeholder='Тип' value={values.typeRu} onChange={onChange} errorMessage={validation.typeRu}/>
-          <FormInput name="typeEn" placeholder='Type' value={values.typeEn} onChange={onChange} errorMessage={validation.typeEn}/>
-          <FormInput name="yearRu" placeholder='Год' value={values.yearRu} onChange={onChange} errorMessage={validation.yearRu}/>
-          <FormInput name="yearEn" placeholder='Year' value={values.yearEn} onChange={onChange} errorMessage={validation.yearEn}/>
-          <FormTextarea name="descriptionRu" placeholder='Описание' value={values.descriptionRu} onChange={onChange} errorMessage={validation.descriptionRu}/>
-          <FormTextarea name="descriptionEn" placeholder='Description' value={values.descriptionEn} onChange={onChange} errorMessage={validation.descriptionEn}/>
-          <FormSubmitBtn label={intl.ui.submit.update} onClick={handleUpdate}/>
+    <>
+      {!interiorById && <div>{error && error.message}</div>}
+      {
+        !loading && interiorById &&
+        <div className="admin-page">
+          <form className="form" action="">
+            <div className="form__left">
+              <FormInput name="nameRu" placeholder='Имя' value={values.nameRu} onChange={onChange} errorMessage={validation.nameRu}/>
+              <FormInput name="nameEn" placeholder='Name' value={values.nameEn} onChange={onChange} errorMessage={validation.nameEn}/>
+              <FormInput name="typeRu" placeholder='Тип' value={values.typeRu} onChange={onChange} errorMessage={validation.typeRu}/>
+              <FormInput name="typeEn" placeholder='Type' value={values.typeEn} onChange={onChange} errorMessage={validation.typeEn}/>
+              <FormInput name="yearRu" placeholder='Год' value={values.yearRu} onChange={onChange} errorMessage={validation.yearRu}/>
+              <FormInput name="yearEn" placeholder='Year' value={values.yearEn} onChange={onChange} errorMessage={validation.yearEn}/>
+              <FormTextarea name="descriptionRu" placeholder='Описание' value={values.descriptionRu} onChange={onChange} errorMessage={validation.descriptionRu}/>
+              <FormTextarea name="descriptionEn" placeholder='Description' value={values.descriptionEn} onChange={onChange} errorMessage={validation.descriptionEn}/>
+              <FormSubmitBtn label={intl.ui.submit.update} onClick={handleUpdate}/>
+            </div>
+            <div className="form__right">
+              <FileControl label={intl.ui.buttons.addPreview} previewUrl={previewUrl}/>
+              <FileControl label={intl.ui.buttons.addImages} multiple={true} errorValidationClass={arrayIsEmpty(multiFiles) ? validation.multiPreviews : ''}/>
+            </div>
+          </form>
         </div>
-        <div className="form__right">
-          <FileControl label={intl.ui.buttons.addPreview} previewUrl={previewUrl}/>
-          <FileControl label={intl.ui.buttons.addImages} multiple={true}  errorValidationClass={arrayIsEmpty(multiFiles) ? validation.multiPreviews : ''}/>
-        </div>
-      </form>
-    </div>
+      }
+    </>
   );
 }
