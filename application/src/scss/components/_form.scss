@@ -33,6 +33,13 @@
     @include placeholder {
         color: $white;
     }
+
+    &.form-control__input--error {
+        border-color: $red;
+        @include placeholder {
+            color: $red;
+        }
+    }
 }
 
 .form-control__textarea {
@@ -57,6 +64,14 @@
     textarea {
         @include placeholder {
             color: $white;
+        }
+    }
+    &.form-control__textarea--error {
+        border-color: $red;
+        textarea {
+            @include placeholder {
+                color: $red;
+            }
         }
     }
 }
@@ -105,7 +120,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 240px;
+    min-width: 240px;
     height: 60px;
     padding: 11px 20px;
     box-sizing: border-box;
@@ -126,6 +141,10 @@
     &:hover {
         color: $black;
         background-color: $white;
+    }
+    &.form-control__button--error {
+        border-color: $red;
+        color: $red;
     }
 }
 

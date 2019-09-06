@@ -15,5 +15,18 @@ export type TIntlDictionary = {
   writeMe: {
     left: string;
     right: string;
-  };
+  }
+  validation: {
+    required: string;
+  }
+  ui: {
+    buttons: {
+      addPreview: string;
+      addImages: string;
+    },
+    submit: {
+      add: string;
+      update: string;
+    };
+  }
 }

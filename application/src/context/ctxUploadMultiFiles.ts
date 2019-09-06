@@ -2,10 +2,10 @@ import React, {Dispatch, SetStateAction} from 'react';
 import {UserFile} from "types/common";
 
 type TProps = {
-  updatedFiles: (UserFile | string)[];
+  multiFiles: (UserFile | string)[];
   removedImagesUrls: string[];
-  setUpdatedFiles: Dispatch<SetStateAction<(string | UserFile)[]>>
+  setMultiFiles: Dispatch<SetStateAction<(string | UserFile)[]>>
   setRemovedImagesUrls: Dispatch<SetStateAction<string[]>>
 }
 
-export const UploadFilesContext = React.createContext<null | TProps>(null);
+export const UploadMultiFilesContext = React.createContext<null | TProps>(null);
