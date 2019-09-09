@@ -2,8 +2,9 @@ import React, {FC, useCallback, useEffect, useState} from 'react';
 import {UPDATE_INTERIOR} from "queries/mutations";
 import {TUpdateInterior} from "types/common";
 import {FileControl} from "components/FileControl/FileControl";
-import {TInteriorMatch} from "utils/routes";
+import {routes, TInteriorMatch} from "utils/routes";
 import {match} from "react-router";
+import { History } from 'history';
 import {GET_INTERIOR_BY_ID, T_GET_INTERIOR_BY_ID, T_VAR_GET_INTERIOR_BY_ID} from "queries/interiors";
 import {useMutation, useQuery} from "@apollo/react-hooks";
 import {useContextStrict} from "hooks/useContextStrict";
@@ -48,19 +49,24 @@ interface UserFile extends File {
 type TProps = {
   updateInterior: (interior: TUpdateInterior) => void;
   match: match<TInteriorMatch>;
+  history: History
 }
 
 export const AdminEditInteriorPage: FC<TProps> = (props) => {
   console.log('RENDER EDIT_PAGE');
   const {singleFile} = useContextStrict(UploadSingleFileContext);
   const {multiFiles, setMultiFiles, removedImagesUrls} = useContextStrict(UploadMultiFilesContext);
-  const {match} = props;
+  const {match, history} = props;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const {loading, error, data} = useQuery<T_GET_INTERIOR_BY_ID, T_VAR_GET_INTERIOR_BY_ID>(GET_INTERIOR_BY_ID, {
     variables: {_id: match.params.id}
   });
   const interiorById = null || (data && data.interiorById);
-  const [updateInterior, {loading: mutationLoading, error: mutationError}] = useMutation<TUpdateInterior>(UPDATE_INTERIOR);
+  const [updateInterior] = useMutation<TUpdateInterior>(UPDATE_INTERIOR, {
+    onCompleted: () => {
+      history.push(routes.admin())
+    }
+  });
   const [initialValues, setInitialValues] = useState<TInteriorEditFormValues>({
     nameRu: '',
     nameEn: '',

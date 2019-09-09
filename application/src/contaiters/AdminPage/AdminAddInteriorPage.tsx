@@ -13,6 +13,9 @@ import {UploadSingleFileContext} from "context/ctxUploadSingleFile";
 import {arrayIsEmpty, stringIsEmpty, stringOrVoid, valueIsString} from "utils/stringUtils";
 import {FormSubmitBtn} from "components/FormSubmitBtn/FormSubmitBtn";
 import {UserFile} from "types/common";
+import {routes} from "utils/routes";
+import {History} from "history";
+import {GET_ALL_INTERIORS} from "queries/interiors";
 
 type TInteriorFormValues = {
   nameRu: string;
@@ -53,11 +56,19 @@ const validateAddInteriorForm = (i18n: TIntlDictionary, singleFile: UserFile | s
   multiPreviews: stringOrVoid(arrayIsEmpty(multiFiles), 'form-control__button--error'),
 });
 
-export const AdminAddInteriorPage: FC<any> = (props) => {
+type TProps = {
+  history: History
+}
+
+export const AdminAddInteriorPage: FC<TProps> = ({history}) => {
   console.log('RENDER ADD_PAGE');
   const {multiFiles} = useContextStrict(UploadMultiFilesContext);
   const {singleFile} = useContextStrict(UploadSingleFileContext);
-  const [addInterior] = useMutation(ADD_INTERIOR);
+  const [addInterior] = useMutation(ADD_INTERIOR, {
+    onCompleted: () => {
+      history.push(routes.admin())
+    }
+  });
 
   const intl = useIntlDictionary();
 
@@ -69,8 +80,8 @@ export const AdminAddInteriorPage: FC<any> = (props) => {
     const {nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn} = values;
     const newInterior = {
       variables: {nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, preview: singleFile, images: multiFiles},
-      // refetchQueries: [ { query: GET_ALL_INTERIORS }]
-    }
+      refetchQueries: [ { query: GET_ALL_INTERIORS }]
+    };
     validate(() => addInterior(newInterior));
   }, [addInterior, multiFiles, singleFile, validate, values]);
 
