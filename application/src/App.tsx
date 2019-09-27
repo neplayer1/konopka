@@ -9,11 +9,14 @@ import AppBody from "contaiters/AppBody/AppBody";
 import {ModalProvider} from "hoc/hocModalProvider";
 import {UploadMultiFilesProvider} from "hoc/hocUploadMultiFiles";
 import {UploadSingleFileProvider} from "hoc/hocUploadSingleFile";
+import {CookiesProvider} from 'react-cookie';
+import {AuthProvider} from "hoc/hocAuthProvider";
 
 const {createUploadLink} = require('apollo-upload-client');
 
 const link = createUploadLink({
   uri: `http://localhost:3005/api`,
+  credentials: 'include'
 });
 
 const client = new ApolloClient({
@@ -22,20 +25,23 @@ const client = new ApolloClient({
 });
 
 const App: React.FC = () => {
-
   return (
     <ApolloProvider client={client}>
-      <IntlProvider>
-        <ModalProvider>
-          <UploadMultiFilesProvider>
-            <UploadSingleFileProvider>
-              <Header/>
-              <AppBody/>
-              <Footer/>
-            </UploadSingleFileProvider>
-          </UploadMultiFilesProvider>
-        </ModalProvider>
-      </IntlProvider>
+      <CookiesProvider>
+        <AuthProvider>
+          <IntlProvider>
+            <ModalProvider>
+              <UploadMultiFilesProvider>
+                <UploadSingleFileProvider>
+                  <Header/>
+                  <AppBody/>
+                  <Footer/>
+                </UploadSingleFileProvider>
+              </UploadMultiFilesProvider>
+            </ModalProvider>
+          </IntlProvider>
+        </AuthProvider>
+      </CookiesProvider>
     </ApolloProvider>
   );
 };

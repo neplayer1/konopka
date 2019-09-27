@@ -32,6 +32,13 @@ img {
     @include md-max() {
         min-height: calc(100vh - #{$headerHeight_SM});
     }
+}
 
-
+.app-404 {
+    font-family: $Monserrat;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 76px;
+    line-height: 114px;
+    text-align: center;
 }

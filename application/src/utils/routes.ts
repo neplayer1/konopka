@@ -32,6 +32,9 @@ export const routes = {
   admin() {
     return '/admin';
   },
+  adminDashboard() {
+    return '/admin/dashboard';
+  },
   adminAddInterior() {
     return `/admin/interiors/add`;
   },

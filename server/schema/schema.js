@@ -1,10 +1,13 @@
+const token = require('../token');
 const graphql = require('graphql');
 const GraphQLObjectId = require('graphql-scalar-objectid');
 const { GraphQLUpload } = require('graphql-upload');
 const path = require('path');
 const shortid = require('shortid');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const { createWriteStream, existsSync, mkdirSync, unlink } = require('fs');
-const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLList } = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLList, GraphQLBoolean } = graphql;
 
 const storeUpload = async (stream) => {
   const id = shortid.generate();
@@ -53,6 +56,7 @@ const processDelete = async (url) => {
 
 const InteriorsModel = require('../models/interiors');
 const FurnitureModel = require('../models/furniture');
+const AdminModel = require('../models/admin');
 
 const InteriorType = new GraphQLObjectType({
   name: 'Interior',
@@ -123,146 +127,202 @@ const FurnitureType = new GraphQLObjectType({
   })
 });
 
-const Mutation = new GraphQLObjectType({
-  name: 'Mutation',
-  fields: {
-    addInterior: {
-      type: InteriorMutateType,
-      args: {
-        nameRu: { type: GraphQLString },
-        typeRu: { type: GraphQLString },
-        yearRu: { type: GraphQLString },
-        descriptionRu: { type: GraphQLString },
-        nameEn: { type: GraphQLString },
-        typeEn: { type: GraphQLString },
-        yearEn: { type: GraphQLString },
-        descriptionEn: { type: GraphQLString },
-        preview: { type: GraphQLUpload },
-        images: { type: GraphQLUpload },
-      },
-      async resolve(parent, { nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, preview, images }) {
-        console.log("preview", preview)
-        console.log("images", images)
-        const previewUrl = await processUpload(preview);
-        const picturesUrl = await processUpload(images);
+const AdminMutateCheckType = new GraphQLObjectType({
+  name: 'AdminCheckMutation',
+  fields: () => ({
+    _id: { type: GraphQLObjectId },
+    token: { type: GraphQLString },
+  })
+});
 
-        const interior = new InteriorsModel({
-          nameRu,
-          typeRu,
-          yearRu,
-          descriptionRu,
-          nameEn,
-          typeEn,
-          yearEn,
-          descriptionEn,
-          previewUrl,
-          picturesUrl
-        });
-        return interior.save();
-      }
-    },
-    deleteInterior: {
-      type: InteriorType,
-      args: {
-        _id: { type: GraphQLObjectId },
-        previewUrl: { type: GraphQLString },
-        picturesUrl: { type: new GraphQLList(GraphQLString) }
+const AdminMutateType = new GraphQLObjectType({
+  name: 'AdminMutate',
+  fields: () => ({
+    _id: { type: GraphQLObjectId },
+    password: { type: GraphQLString },
+  })
+});
+
+const Mutation = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+      addInterior: {
+        type: InteriorMutateType,
+        args: {
+          nameRu: { type: GraphQLString },
+          typeRu: { type: GraphQLString },
+          yearRu: { type: GraphQLString },
+          descriptionRu: { type: GraphQLString },
+          nameEn: { type: GraphQLString },
+          typeEn: { type: GraphQLString },
+          yearEn: { type: GraphQLString },
+          descriptionEn: { type: GraphQLString },
+          preview: { type: GraphQLUpload },
+          images: { type: GraphQLUpload },
+        },
+        async resolve(parent, { nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, preview, images }) {
+          console.log("preview", preview)
+          console.log("images", images)
+          const previewUrl = await processUpload(preview);
+          const picturesUrl = await processUpload(images);
+
+          const interior = new InteriorsModel({
+            nameRu,
+            typeRu,
+            yearRu,
+            descriptionRu,
+            nameEn,
+            typeEn,
+            yearEn,
+            descriptionEn,
+            previewUrl,
+            picturesUrl
+          });
+          return interior.save();
+        }
       },
-      async resolve(parent, { _id, previewUrl, picturesUrl }) {
-        console.log("DELETE STARTED");
-        if (previewUrl.length !== 0) {
-          // удаляем превью
-          await processDelete(previewUrl);
-        }
-        if (picturesUrl.length !== 0) {
-          // удаляем картинки
-          picturesUrl.map(async (image) => {
-            await processDelete(image);
-          })
-        }
-        return InteriorsModel.findByIdAndRemove(_id);
-      }
-    },
-    updateInterior: {
-      type: InteriorEditMutateType,
-      args: {
-        _id: { type: GraphQLObjectId },
-        nameRu: { type: GraphQLString },
-        typeRu: { type: GraphQLString },
-        yearRu: { type: GraphQLString },
-        descriptionRu: { type: GraphQLString },
-        nameEn: { type: GraphQLString },
-        typeEn: { type: GraphQLString },
-        yearEn: { type: GraphQLString },
-        descriptionEn: { type: GraphQLString },
-        previewUrl: { type: GraphQLString },
-        newPreview: { type: GraphQLUpload },
-        imagesOrder: { type: new GraphQLList(GraphQLString) },
-        addedFiles: { type: new GraphQLList(GraphQLUpload) },
-        removedImagesUrls: { type: new GraphQLList(GraphQLString) },
-      },
-      async resolve(parent, { _id, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, previewUrl, newPreview, imagesOrder, addedFiles, removedImagesUrls }) {
-        console.log(previewUrl, newPreview, imagesOrder, addedFiles, removedImagesUrls)
-        let preview = previewUrl;
-        let picturesUrl = [];
-        // смотрим не изменилось ли превью
-        if (typeof newPreview !== "string") {
-          // загружаем новое
-          preview = await processUpload(newPreview);
-          // удаляем старое
-          await processDelete(previewUrl);
-        }
-        // смотрим есть ли удаленные картинки
-        if (removedImagesUrls.length !== 0) {
-          // удаляем их
-          removedImagesUrls.map(async (image) => {
-            await processDelete(image);
-          })
-        }
-        // смотрим есть ли новые картинки
-        if (addedFiles.length !== 0) {
-          // загружаем их
-          let newUrls = await processUpload(addedFiles);
-          if (Array.isArray(newUrls)) {
-            newUrls = [...newUrls];
-          } else {
-            newUrls = [newUrls];
+      deleteInterior: {
+        type: InteriorType,
+        args: {
+          _id: { type: GraphQLObjectId },
+          previewUrl: { type: GraphQLString },
+          picturesUrl: { type: new GraphQLList(GraphQLString) }
+        },
+        async resolve(parent, { _id, previewUrl, picturesUrl }) {
+          console.log("DELETE STARTED");
+          if (previewUrl.length !== 0) {
+            // удаляем превью
+            await processDelete(previewUrl);
           }
-          imagesOrder.forEach(name => {
-            if (name === 'empty') {
-              console.log(newUrls)
-              picturesUrl.push(newUrls[0]);
-              newUrls.shift();
-            } else {
-              picturesUrl.push(name)
-            }
-          })
-        } else {
-          picturesUrl = imagesOrder;
+          if (picturesUrl.length !== 0) {
+            // удаляем картинки
+            picturesUrl.map(async (image) => {
+              await processDelete(image);
+            })
+          }
+          return InteriorsModel.findByIdAndRemove(_id);
         }
-        console.log("FINISED UPDATE");
-        return InteriorsModel.findByIdAndUpdate(
-          _id,
-          {
-            $set: {
-              nameRu,
-              typeRu,
-              yearRu,
-              descriptionRu,
-              nameEn,
-              typeEn,
-              yearEn,
-              descriptionEn,
-              previewUrl: preview,
-              picturesUrl
+      },
+      updateInterior: {
+        type: InteriorEditMutateType,
+        args: {
+          _id: { type: GraphQLObjectId },
+          nameRu: { type: GraphQLString },
+          typeRu: { type: GraphQLString },
+          yearRu: { type: GraphQLString },
+          descriptionRu: { type: GraphQLString },
+          nameEn: { type: GraphQLString },
+          typeEn: { type: GraphQLString },
+          yearEn: { type: GraphQLString },
+          descriptionEn: { type: GraphQLString },
+          previewUrl: { type: GraphQLString },
+          newPreview: { type: GraphQLUpload },
+          imagesOrder: { type: new GraphQLList(GraphQLString) },
+          addedFiles: { type: new GraphQLList(GraphQLUpload) },
+          removedImagesUrls: { type: new GraphQLList(GraphQLString) },
+        },
+        async resolve(parent, { _id, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, previewUrl, newPreview, imagesOrder, addedFiles, removedImagesUrls }) {
+          console.log(previewUrl, newPreview, imagesOrder, addedFiles, removedImagesUrls)
+          let preview = previewUrl;
+          let picturesUrl = [];
+          // смотрим не изменилось ли превью
+          if (typeof newPreview !== "string") {
+            // загружаем новое
+            preview = await processUpload(newPreview);
+            // удаляем старое
+            await processDelete(previewUrl);
+          }
+          // смотрим есть ли удаленные картинки
+          if (removedImagesUrls.length !== 0) {
+            // удаляем их
+            removedImagesUrls.map(async (image) => {
+              await processDelete(image);
+            })
+          }
+          // смотрим есть ли новые картинки
+          if (addedFiles.length !== 0) {
+            // загружаем их
+            let newUrls = await processUpload(addedFiles);
+            if (Array.isArray(newUrls)) {
+              newUrls = [...newUrls];
+            } else {
+              newUrls = [newUrls];
+            }
+            imagesOrder.forEach(name => {
+              if (name === 'empty') {
+                console.log(newUrls)
+                picturesUrl.push(newUrls[0]);
+                newUrls.shift();
+              } else {
+                picturesUrl.push(name)
+              }
+            })
+          } else {
+            picturesUrl = imagesOrder;
+          }
+          console.log("FINISED UPDATE");
+          return InteriorsModel.findByIdAndUpdate(
+            _id,
+            {
+              $set: {
+                nameRu,
+                typeRu,
+                yearRu,
+                descriptionRu,
+                nameEn,
+                typeEn,
+                yearEn,
+                descriptionEn,
+                previewUrl: preview,
+                picturesUrl
+              },
             },
-          },
-          { new: true },
-        );
+            { new: true },
+          );
+        }
+      },
+      adminRegister: {
+        type: AdminMutateType,
+        args: {
+          password: { type: GraphQLString },
+        },
+        async resolve(parent, { password }) {
+          const hashedPassword = await bcrypt.hash(password, 10);
+
+          const admin = new AdminModel({
+            password: hashedPassword
+          });
+
+          console.log(admin, hashedPassword);
+          return admin.save();
+        }
+      },
+      adminLogin: {
+        type: AdminMutateType,
+        args: {
+          password: { type: GraphQLString },
+        },
+        async resolve(parent, { password }, { res }) {
+          console.log("START LOGGING");
+          const admin = await AdminModel.findOne({});
+          const valid = await bcrypt.compare(password, admin.password);
+
+          if (!valid) {
+            return null;
+          }
+
+          const accessToken = jwt.sign({ userId: admin._id }, token.ACCESS_TOKEN_SECRET, {
+            expiresIn: "1d"
+          });
+
+          res.cookie("access-token", accessToken);
+
+          return admin;
+        }
       }
     }
-  }
-});
+  })
+;
 
 const Query = new GraphQLObjectType({
   name: 'Query',

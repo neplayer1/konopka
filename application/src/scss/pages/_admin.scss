@@ -1,6 +1,6 @@
 .admin-page {
     @include maxVW($maxvw) {
-        margin-bottom: #{main_Hor_Indent($maxvw)};
+        padding-bottom: #{main_Hor_Indent($maxvw)};
     }
 }
 

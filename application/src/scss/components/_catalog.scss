@@ -1,8 +1,11 @@
+.interiors-page {
+    @include maxVW($maxvw) {
+        padding-bottom: #{main_Hor_Indent($maxvw)};
+    }
+}
+
 .catalog {
     width: 100%;
-    @include maxVW($maxvw) {
-        margin-bottom: #{main_Hor_Indent($maxvw)};
-    }
     @include clearfix;
 }
 

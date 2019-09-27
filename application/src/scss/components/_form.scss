@@ -2,6 +2,17 @@
     display: flex;
 }
 
+.form__center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - #{$headerHeight_LG} * 2);
+
+    @include md-max() {
+        min-height: calc(100vh - #{$headerHeight_SM} * 2);
+    }
+}
+
 .form__right {
     margin-left: 80px;
 }
@@ -24,7 +35,7 @@
     line-height: 30px;
     color: $black;
     background-color: transparent;
-    @include transition($bg_type_1);
+    @include transition($bg_type_1, $border_type_1);
     display: block;
 
     &:hover {
@@ -39,6 +50,9 @@
         @include placeholder {
             color: $red;
         }
+    }
+    &.form-control__input--animate-error {
+        animation: 0.5s errorInputAnimation ease-in-out;
     }
 }
 

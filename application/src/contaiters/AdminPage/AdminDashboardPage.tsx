@@ -7,13 +7,12 @@ import {GET_ALL_FURNITURE, T_GET_ALL_FURNITURE} from "queries/furniture";
 import {DELETE_INTERIOR} from "queries/mutations";
 import {useModal} from "hooks/useModal";
 
-export const AdminPage: FC = () => {
+export const AdminDashboardPage: FC = () => {
   const {loading: loadingInteriors, error: errorInteriors, data: dataInteriors} = useQuery<T_GET_ALL_INTERIORS>(GET_ALL_INTERIORS);
   const {loading: loadingFurniture, error: errorFurniture, data: dataFurniture} = useQuery<T_GET_ALL_FURNITURE>(GET_ALL_FURNITURE);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [deleteInterior, { loading: deleteLoading, error: deleteError, called: deleteCalled }] = useMutation(DELETE_INTERIOR, {onCompleted: () => openModal(false)});
   const {initModal, openModal} = useModal();
-
   const interiors = null || (dataInteriors && dataInteriors.interiors);
   const furniture = null || (dataFurniture && dataFurniture.furniture);
 

@@ -11,6 +11,7 @@ export type TIntlDictionary = {
     interiors: string;
     furniture: string;
     about: string;
+    dashboard: string;
   }
   writeMe: {
     left: string;

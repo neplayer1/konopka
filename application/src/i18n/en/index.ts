@@ -20,6 +20,7 @@ const dictionary: TIntlDictionary = {
     interiors: 'Interiors',
     furniture: 'Furniture',
     about: 'About',
+    dashboard: 'Dashboard',
   },
   writeMe: {
     left: 'Need project?',

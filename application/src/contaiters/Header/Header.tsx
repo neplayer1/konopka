@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useState, useEffect, useRef} from 'react';
+import React, {FC, useCallback, useEffect, useRef, useState} from 'react';
 import {HeaderNavLink} from 'contaiters/Header/styled/HeaderNavLink';
 import {HeaderNavButton} from 'contaiters/Header/styled/HeaderNavButton';
 import {Link} from 'react-router-dom';
@@ -6,9 +6,11 @@ import {routes} from 'utils/routes';
 import {useIntlDictionary} from 'hooks/useDictionary';
 import {useHandleChangeLang} from 'hooks/useHandleChangeLang';
 import {CSSTransition} from 'react-transition-group';
-import {disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks} from 'body-scroll-lock';
+import {clearAllBodyScrollLocks, disableBodyScroll, enableBodyScroll} from 'body-scroll-lock';
+import {useAuth} from "hooks/useAuth";
 
 export const Header: FC = () => {
+  const {autorized} = useAuth();
   const handleChangeLang = useHandleChangeLang();
   const {nav, changeLangLabel} = useIntlDictionary();
   const [opened, setOpened] = useState(false);
@@ -45,6 +47,7 @@ export const Header: FC = () => {
             <HeaderNavLink onClick={handleCloseMenu} url={routes.interiors({})} label={nav.interiors}/>
             <HeaderNavLink onClick={handleCloseMenu} url={routes.furniture({})} label={nav.furniture}/>
             <HeaderNavLink onClick={handleCloseMenu} url={routes.about()} label={nav.about}/>
+            { autorized ? <HeaderNavLink onClick={handleCloseMenu} url={routes.adminDashboard()} label={nav.dashboard}/> : null }
             <HeaderNavButton onClick={handleChangeLang} label={changeLangLabel}/>
           </nav>
         </CSSTransition>
