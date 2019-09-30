@@ -13,7 +13,6 @@ type TProps = {
 export const AdminLoginPage: FC<TProps> = ({history}) => {
   const [passError, setPassError] = useState(false);
   const {setAutorized} = useAuth();
-  // const [adminRegister] = useMutation(ADMIN_REGISTER);
   const [adminLogin] = useMutation(ADMIN_LOGIN, {
     onCompleted: ({adminLogin}) => {
       if (adminLogin === null) {

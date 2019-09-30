@@ -21,6 +21,7 @@ const dictionary: TIntlDictionary = {
     furniture: 'Furniture',
     about: 'About',
     dashboard: 'Dashboard',
+    logout: 'Logout',
   },
   writeMe: {
     left: 'Need project?',

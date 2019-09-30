@@ -26,7 +26,7 @@ export const CatalogPageItem: FC<TCatalogItem> = ({currentItem, prevItem, nextIt
 
   const catalogImages = useMemo(() => {
     return picturesUrl.map((url) => (
-      <img key={url} src={`http://localhost:3005/api/${url}`} alt=""/>
+      <img key={url} src={`http://localhost:3005/images/${url}`} alt=""/>
     ))
   }, [picturesUrl]);
 

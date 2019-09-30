@@ -8,6 +8,7 @@ import {useHandleChangeLang} from 'hooks/useHandleChangeLang';
 import {CSSTransition} from 'react-transition-group';
 import {clearAllBodyScrollLocks, disableBodyScroll, enableBodyScroll} from 'body-scroll-lock';
 import {useAuth} from "hooks/useAuth";
+import {useCookies} from "react-cookie";
 
 export const Header: FC = () => {
   const {autorized} = useAuth();
@@ -16,6 +17,9 @@ export const Header: FC = () => {
   const [opened, setOpened] = useState(false);
   const header = useRef<HTMLElement>(null);
   const headerNode = header.current;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [cookies, setCookie, removeCookie] = useCookies(['access-token']);
+  const {setAutorized} = useAuth();
 
   const handleOpenMenu = useCallback(() => {
     setOpened(!opened);
@@ -24,6 +28,11 @@ export const Header: FC = () => {
   const handleCloseMenu = useCallback(() => {
     setOpened(false);
   }, []);
+
+  const handleLogOut = useCallback(() => {
+    removeCookie('access-token');
+    setAutorized(false);
+  }, [removeCookie, setAutorized]);
 
   useEffect(() => {
     if (headerNode) {
@@ -47,7 +56,8 @@ export const Header: FC = () => {
             <HeaderNavLink onClick={handleCloseMenu} url={routes.interiors({})} label={nav.interiors}/>
             <HeaderNavLink onClick={handleCloseMenu} url={routes.furniture({})} label={nav.furniture}/>
             <HeaderNavLink onClick={handleCloseMenu} url={routes.about()} label={nav.about}/>
-            { autorized ? <HeaderNavLink onClick={handleCloseMenu} url={routes.adminDashboard()} label={nav.dashboard}/> : null }
+            {autorized ? <HeaderNavLink onClick={handleCloseMenu} url={routes.adminDashboard()} label={nav.dashboard}/> : null}
+            {autorized ? <HeaderNavLink onClick={handleLogOut} url={routes.index()} label={nav.logout}/> : null}
             <HeaderNavButton onClick={handleChangeLang} label={changeLangLabel}/>
           </nav>
         </CSSTransition>

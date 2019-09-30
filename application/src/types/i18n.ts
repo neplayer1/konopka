@@ -12,6 +12,7 @@ export type TIntlDictionary = {
     furniture: string;
     about: string;
     dashboard: string;
+    logout: string;
   }
   writeMe: {
     left: string;

@@ -161,8 +161,8 @@ const Mutation = new GraphQLObjectType({
           images: { type: GraphQLUpload },
         },
         async resolve(parent, { nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, preview, images }) {
-          console.log("preview", preview)
-          console.log("images", images)
+          // console.log("preview", preview)
+          // console.log("images", images)
           const previewUrl = await processUpload(preview);
           const picturesUrl = await processUpload(images);
 
@@ -189,7 +189,7 @@ const Mutation = new GraphQLObjectType({
           picturesUrl: { type: new GraphQLList(GraphQLString) }
         },
         async resolve(parent, { _id, previewUrl, picturesUrl }) {
-          console.log("DELETE STARTED");
+          // console.log("DELETE STARTED");
           if (previewUrl.length !== 0) {
             // удаляем превью
             await processDelete(previewUrl);
@@ -222,7 +222,6 @@ const Mutation = new GraphQLObjectType({
           removedImagesUrls: { type: new GraphQLList(GraphQLString) },
         },
         async resolve(parent, { _id, nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, previewUrl, newPreview, imagesOrder, addedFiles, removedImagesUrls }) {
-          console.log(previewUrl, newPreview, imagesOrder, addedFiles, removedImagesUrls)
           let preview = previewUrl;
           let picturesUrl = [];
           // смотрим не изменилось ли превью
@@ -250,7 +249,6 @@ const Mutation = new GraphQLObjectType({
             }
             imagesOrder.forEach(name => {
               if (name === 'empty') {
-                console.log(newUrls)
                 picturesUrl.push(newUrls[0]);
                 newUrls.shift();
               } else {
@@ -293,7 +291,6 @@ const Mutation = new GraphQLObjectType({
             password: hashedPassword
           });
 
-          console.log(admin, hashedPassword);
           return admin.save();
         }
       },
@@ -303,7 +300,6 @@ const Mutation = new GraphQLObjectType({
           password: { type: GraphQLString },
         },
         async resolve(parent, { password }, { res }) {
-          console.log("START LOGGING");
           const admin = await AdminModel.findOne({});
           const valid = await bcrypt.compare(password, admin.password);
 
@@ -319,7 +315,7 @@ const Mutation = new GraphQLObjectType({
 
           return admin;
         }
-      }
+      },
     }
   })
 ;
@@ -405,6 +401,19 @@ const Query = new GraphQLObjectType({
         return FurnitureModel.findOne({ _id: { $gt: _id } }).sort({ _id: 1 }).limit(1);
       }
     },
+    checkToken: {
+      type: GraphQLBoolean,
+      resolve(parent, args, { res, req }) {
+        const reqToken = req.cookies["access-token"];
+        const decoded = jwt.verify(reqToken, token.ACCESS_TOKEN_SECRET, function(err, decoded) {
+          if (err) {
+            res.clearCookie("access-token");
+          }
+          return decoded;
+        });
+        return !!decoded;
+      }
+    }
   }
 });
 

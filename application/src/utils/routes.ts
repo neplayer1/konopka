@@ -12,6 +12,9 @@ export type TFurnitureParams = {
 };
 
 export const routes = {
+  index() {
+    return '/';
+  },
   interiors({id}: TInteriorsParams) {
     const path = [id].filter(t => !!t);
     return `/interiors/${path.join('/')}`;

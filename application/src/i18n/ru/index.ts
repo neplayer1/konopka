@@ -25,6 +25,7 @@ const dictionary: TIntlDictionary = {
     furniture: 'Мебель',
     about: 'Обо мне',
     dashboard: 'Админка',
+    logout: 'Выйти',
   },
   writeMe: {
     left: 'Хотите проект?',

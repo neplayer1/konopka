@@ -21,3 +21,9 @@ export const ADMIN_LOGIN = gql`
     }
   }
 `;
+
+export const CHECK_TOKEN = gql`
+  query checkToken {
+    checkToken
+  }
+`;
