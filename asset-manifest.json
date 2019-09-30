@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/konopka/static/css/main.f8d526d7.chunk.css",
+    "main.js": "/konopka/static/js/main.d9c01a08.chunk.js",
+    "main.js.map": "/konopka/static/js/main.d9c01a08.chunk.js.map",
+    "runtime~main.js": "/konopka/static/js/runtime~main.6ccc1d52.js",
+    "runtime~main.js.map": "/konopka/static/js/runtime~main.6ccc1d52.js.map",
+    "static/css/2.764ccc25.chunk.css": "/konopka/static/css/2.764ccc25.chunk.css",
+    "static/js/2.eac7d014.chunk.js": "/konopka/static/js/2.eac7d014.chunk.js",
+    "static/js/2.eac7d014.chunk.js.map": "/konopka/static/js/2.eac7d014.chunk.js.map",
+    "index.html": "/konopka/index.html",
+    "precache-manifest.f118d387ebdfedac3030dade15410786.js": "/konopka/precache-manifest.f118d387ebdfedac3030dade15410786.js",
+    "service-worker.js": "/konopka/service-worker.js",
+    "static/css/2.764ccc25.chunk.css.map": "/konopka/static/css/2.764ccc25.chunk.css.map",
+    "static/css/main.f8d526d7.chunk.css.map": "/konopka/static/css/main.f8d526d7.chunk.css.map",
+    "static/media/_style.scss": "/konopka/static/media/PT_Root_UI_Regular.a16ca331.woff",
+    "static/media/sample.jpg": "/konopka/static/media/sample.1e071326.jpg"
+  }
+}
