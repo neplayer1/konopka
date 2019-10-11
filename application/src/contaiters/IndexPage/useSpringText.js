@@ -3,25 +3,23 @@ export const springText = (target, message) => {
     let MESSAGE = message;
 
     let FONT_SIZE = 100;
-    let ONE_LETTER_AMOUNT = 300;
-    let AMOUNT = MESSAGE.length * ONE_LETTER_AMOUNT;
-    let CLEAR_AMOUNT = 2;
-    let SIZE = 2;
+    let SIZE = 1.5;
+    let INDENT = 3;
+    let STEP = 0.5;
     let INITIAL_DISPLACEMENT = 100;
     let INITIAL_VELOCITY = 5;
     let VELOCITY_RETENTION = 0.95;
-    let SETTLE_SPEED = 1;
-    let FLEE_SPEED = 1;
-    let FLEE_DISTANCE = 50;
+    let SETTLE_SPEED = 0.5;
+    let FLEE_SPEED = 0.5;
+    let FLEE_DISTANCE = FONT_SIZE / 2;
     let FLEE = true;
     let SCATTER_VELOCITY = 3;
     let SCATTER = false;
+    let MOVED_O;
 
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         // Mobile
         // MESSAGE = message;
-        ONE_LETTER_AMOUNT = 120;
-        AMOUNT = MESSAGE.length * ONE_LETTER_AMOUNT;
         FONT_SIZE = 50;
         SIZE = 2;
         INITIAL_DISPLACEMENT = 100;
@@ -34,8 +32,7 @@ export const springText = (target, message) => {
     FLEE_SPEED /= 10;
     SETTLE_SPEED /= 100;
     SCATTER_VELOCITY *= 10;
-    let CLEAR_RADIUS = Math.round(CLEAR_AMOUNT + SIZE);
-    let MOVED_O = Array.apply(null, Array(AMOUNT)).map(function () {return null;});
+    let CLEAR_RADIUS = SIZE * 2;
 
     const canvas = target.current;
     const ctx = canvas.getContext("2d");
@@ -47,6 +44,9 @@ export const springText = (target, message) => {
         y: 0
     }
 
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
     function Point(x,y,r,g,b,a) {
         let angle = Math.random() * 6.28;
         this.dest_x = x;
@@ -67,8 +67,8 @@ export const springText = (target, message) => {
         this.b = b;
         this.a = a;
         this.moved = false;
-        MOVED[moved_length] = this;
-        moved_length++;
+        // MOVED[moved_length] = this;
+        // moved_length++;
 
         this.getX = function() {
             return this.x;
@@ -123,6 +123,23 @@ export const springText = (target, message) => {
             this.simpleMove();
         }
 
+      this.selfMove = function (i) {
+        if (this.distanceTo(MOUSE.x, MOUSE.y) <= FLEE_DISTANCE) {
+          this.fleeFrom(MOUSE.x, MOUSE.y);
+        }
+        else {
+          this.settleTo(this.target_x, this.target_y);
+        }
+        let x, y;
+        x = getRandomInt(this.x - STEP, this.x + STEP);
+        y = getRandomInt(this.y - STEP, this.y + STEP);
+        if ((x <= this.x + STEP && x >= this.x - STEP) && (y <= this.y + STEP && y >= this.y - STEP)) {
+          this.x = x;
+          this.y = y;
+          this.simpleMove();
+        }
+      }
+
         this.distanceTo = function(x, y) {
             let dx = x - this.x;
             let dy = y - this.y;
@@ -150,7 +167,8 @@ export const springText = (target, message) => {
         this.draw = function() {
             ctx.fillStyle = "rgba("+this.r+","+this.g+","+this.b+","+this.a+")";
             ctx.beginPath();
-            ctx.arc(this.x,this.y,SIZE,0,2*Math.PI);
+            // ctx.arc(this.x,this.y,SIZE,0,2*Math.PI);
+            ctx.fillRect(this.x, this.y, SIZE, SIZE);
             ctx.fill();
         }
     }
@@ -238,42 +256,46 @@ export const springText = (target, message) => {
         }
 
         if (!isBlank) {
-            let count = 0;
-            let curr = 0;
-            let num = 0;
-            let x = 0;
-            let y = 0;
-            let w = Math.floor(textWidth);
-            POINTS = [];
-            while (count < AMOUNT) {
-                while (curr === 0) {
-                    num = Math.floor(Math.random() * data.length);
-                    curr = data[num];
-                }
-                num = Math.floor(num / 4);
-                x = w/2 - num%w;
-                y = FONT_SIZE * linesLength/2 - Math.floor(num/w);
-                POINTS.push(new Point(x,y,data[num*4],data[num*4 + 1],data[num*4 + 2],data[num*4 + 3]));
-                curr = 0;
-                count++;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          let num = 0;
+          let x = 0;
+          let y = 0;
+          let w = Math.floor(textWidth);
+          let h = Math.floor(FONT_SIZE * linesLength);
+          POINTS = [];
+
+          for (let i = 0; i < w; i += INDENT) {
+            for (let j = 0; j < h; j += INDENT) {
+              num = 4 * (j * w + i);
+              if (data[num + 3] > 0) {
+                x = w / 2 - i % w;
+                y = FONT_SIZE * linesLength / 2 - Math.floor(num / w / 4);
+                POINTS.push(new Point(x, y, data[num], data[num + 1], data[num + 2], data[num + 3]));
+              }
             }
+          }
+          MOVED_O = Array.apply(null, Array(POINTS.length)).map(function () {return null;});
         }
     }
 
     function init() {
-        resizeCanvas()
-        adjustText()
-        window.requestAnimationFrame(animate);
+        resizeCanvas();
+        adjustText();
+        animate();
     }
 
     function animate() {
         update();
         draw();
+        setInterval(() => {
+          draw();
+          update();
+        }, 25);
     }
 
     function update() {
         for (let i=0; i<POINTS.length; i++) {
-            POINTS[i].move()
+            POINTS[i].selfMove(i)
         }
     }
 
@@ -284,11 +306,9 @@ export const springText = (target, message) => {
         MOVED = MOVED_O;
         moved_length = 0;
 
-        for (let i=0; i<POINTS.length; i++) {
-            POINTS[i].draw()
+        for (let i=0; i<MOVED.length; i++) {
+            POINTS[i].draw();
         }
-
-        window.requestAnimationFrame(animate);
     }
 
     return {init, cleanCanvas}
