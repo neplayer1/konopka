@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server/app.js & cd ./application && npm run build",
+    "start": "nodemon server/app.js",
+    "build": "cd application/ && npm install && npm run build",
     "dev": "nodemon server/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
