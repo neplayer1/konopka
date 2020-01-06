@@ -37,6 +37,6 @@ const dbConnection = mongoose.connection;
 dbConnection.on('error', err => console.log(`Connection error: ${err}!`));
 dbConnection.once('open', () => console.log(`Connected to DB!`));
 
-app.listen(PORT, err => {
+app.listen({ port: process.env.PORT || PORT }, err => {
   err ? console.warn(error) : console.log('Server started!');
 })
