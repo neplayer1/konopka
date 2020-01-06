@@ -15,10 +15,10 @@ existsSync(path.join(__dirname, "/images")) || mkdirSync(path.join(__dirname, "/
 const app = express();
 const PORT = 3005;
 
-app.use(cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
-}));
+// app.use(cors({
+//   origin: 'http://localhost:3000',
+//   credentials: true,
+// }));
 
 app.use(cookieParser());
 
