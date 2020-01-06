@@ -16,6 +16,7 @@ export const springText = (target, message) => {
     let SCATTER_VELOCITY = 3;
     let SCATTER = false;
     let MOVED_O;
+    let animationInterval = null;
 
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         // Mobile
@@ -209,6 +210,7 @@ export const springText = (target, message) => {
         if (SCATTER) {
             window.removeEventListener("click", clickHandler);
         }
+        clearInterval(animationInterval)
         POINTS = [];
         MOVED = [];
         ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -287,7 +289,7 @@ export const springText = (target, message) => {
     function animate() {
         update();
         draw();
-        setInterval(() => {
+        animationInterval = setInterval(() => {
           draw();
           update();
         }, 25);
