@@ -26,7 +26,7 @@ export const CatalogPageItem: FC<TCatalogItem> = ({currentItem, prevItem, nextIt
 
   const catalogImages = useMemo(() => {
     return picturesUrl.map((url) => (
-      <img key={url} src={`/images/${url}`} alt=""/>
+      <img key={url} src={`http://salty-mesa-16197.herokuapp.com/images/${url}`} alt=""/>
     ))
   }, [picturesUrl]);
 

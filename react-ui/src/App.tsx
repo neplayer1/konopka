@@ -15,7 +15,7 @@ import {AuthProvider} from "hoc/hocAuthProvider";
 const {createUploadLink} = require('apollo-upload-client');
 
 const link = createUploadLink({
-  uri: `/graphql`,
+  uri: `http://salty-mesa-16197.herokuapp.com/graphql`,
   credentials: 'include'
 });
 

@@ -11,7 +11,7 @@ export const CatalogPageImage: FC<TProps> = ({label, url, imageSrc}) => {
     return (
       <div>
         <Link to={url} data-text={label}>
-            <img src={`/images/${imageSrc}`} alt=""/>
+            <img src={`http://salty-mesa-16197.herokuapp.com/images/${imageSrc}`} alt=""/>
         </Link>
       </div>
     );
