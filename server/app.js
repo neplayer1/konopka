@@ -23,9 +23,14 @@ const PORT = process.env.PORT || 3005;
 app.use(cookieParser());
 
 app.use('/images',
-  express.static(path.join(__dirname, "/images")),
+  express.static(path.join(__dirname, "../react-ui/build/images")),
   graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 20 }),
 );
+
+// All remaining requests return the React app, so it can handle routing.
+app.get('*', function(request, response) {
+  response.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
+});
 
 const server = new ApolloServer({
   schema,
