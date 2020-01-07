@@ -22,8 +22,8 @@ const PORT = process.env.PORT || 3005;
 
 app.use(cookieParser());
 
-app.use('/images',
-  express.static(path.join(__dirname, "../react-ui/build/images")),
+app.use('../react-ui/build/images',
+  express.static(path.join(__dirname, '../react-ui/build/images')),
   graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 20 }),
 );
 
