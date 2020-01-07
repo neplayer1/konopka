@@ -62,7 +62,7 @@ export const FileControl: FC<TProps> = (props) => {
       if (isUrl) {
         const url = file as string;
         return (
-          <FileControlPreview src={`http://salty-mesa-16197.herokuapp.com/images/${url}`}
+          <FileControlPreview src={`/images/${url}`}
                               key={url} dataUrl={url} draggable={true}
                               onDelete={handleDeleteFile}
                               onDragEnd={handleDragEnd}
@@ -96,7 +96,7 @@ export const FileControl: FC<TProps> = (props) => {
     const file = singleFile as UserFile;
     if (previewUrl && typeof singleFile === "string") {
       return (
-        <FileControlPreview src={`http://salty-mesa-16197.herokuapp.com/images/${previewUrl}`} key={previewUrl}/>
+        <FileControlPreview src={`/images/${previewUrl}`} key={previewUrl}/>
       )
     } else {
       if (!file) {
