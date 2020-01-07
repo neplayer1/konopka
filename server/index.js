@@ -39,7 +39,7 @@ const server = new ApolloServer({
   schema,
   context: ({ req, res }) => ({ req, res })
 });
-server.applyMiddleware({ app: index, cors: false });
+server.applyMiddleware({ app, cors: false });
 
 const dbConnection = mongoose.connection;
 dbConnection.on('error', err => console.log(`Connection error: ${err}!`));
