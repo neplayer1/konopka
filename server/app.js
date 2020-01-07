@@ -13,7 +13,7 @@ mongoose.connect('mongodb+srv://nepahka:t5cmurcXDyP3JtSKZhSZ5J4q@interiordesign-
 existsSync(path.join(__dirname, "/images")) || mkdirSync(path.join(__dirname, "/images"));
 
 const app = express();
-const PORT = process.env.PORT || 3005;
+const PORT = process.env.PORT || 5000;
 
 // app.use(cors({
 //   origin: 'http://localhost:3000',
