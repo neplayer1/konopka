@@ -8,7 +8,7 @@ const { graphqlUploadExpress } = require('graphql-upload');
 const { existsSync, mkdirSync } = require('fs');
 const { ApolloServer } = require('apollo-server-express');
 
-mongoose.connect('mongodb+srv://nepahka:t5cmurcXDyP3JtSKZhSZ5J4q@interiordesign-9ryld.mongodb.net/interiorsDB?retryWrites=true&w=majority', { useNewUrlParser: true });
+mongoose.connect('mongodb+srv://nepahka:t5cmurcXDyP3JtSKZhSZ5J4q@interiordesign-9ryld.mongodb.net/interiorsDB?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
 
 existsSync(path.join(__dirname, "/images")) || mkdirSync(path.join(__dirname, "/images"));
 
