@@ -7,7 +7,7 @@
   },
   "scripts": {
     "start": "nodemon server/app.js",
-    "build": "cd react-ui/ && npm install && npm run build",
+    "build": "nodemon server/app.js && cd react-ui/ && npm install && npm run build",
     "dev": "nodemon server/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
