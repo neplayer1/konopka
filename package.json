@@ -6,7 +6,7 @@
     "node": "12.x"
   },
   "scripts": {
-    "start": "npm install && node server",
+    "start": "node server",
     "build": "cd react-ui/ && npm install && npm run build",
     "dev": "nodemon server",
     "test": "echo \"Error: no test specified\" && exit 1"
