@@ -25,15 +25,15 @@ app.use(cookieParser());
 // Priority serve any static files.
 app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
 
-app.use('/images',
-  express.static(path.join(__dirname, "/images")),
-  graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 20 }),
-);
-
 // All remaining requests return the React app, so it can handle routing.
 app.get('*', function(request, response) {
   response.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
 });
+
+app.use('/images',
+  express.static(path.join(__dirname, "/images")),
+  graphqlUploadExpress({ maxFileSize: 10000000, maxFiles: 20 }),
+);
 
 const server = new ApolloServer({
   schema,
