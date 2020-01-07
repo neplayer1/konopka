@@ -17,16 +17,16 @@ target/
 
 ### NetBeans ###
 nbproject/private/
-### build/
+### build/ ###
 nbbuild/
-### dist/
+### dist/ ###
 nbdist/
 .nb-gradle/
 
 ### Node ###
 node_modules/
-### application/node_modules/
-### package-lock.json
+### application/node_modules/ ###
+### package-lock.json ###
 
 .DS_Store
 npm-debug.log
