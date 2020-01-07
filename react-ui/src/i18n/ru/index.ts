@@ -1,16 +1,12 @@
 import { TIntlDictionary, TIntl } from 'types/i18n';
 
 const dictionary: TIntlDictionary = {
-  about: `<p>I am a multidisciplinary designer with a main focus on Digital Design and Branding, located in Thessaloniki,
-            Greece.
+  about: `<p>Я многопрофильный дизайнер с основным фокусом на цифровом дизайне и брендинге, нахожусь в Салониках,
+            Греция.</p>
+          <p>За 11 лет работы в различных рекламных агентствах я поработала графическим / цифровым дизайнером и арт-директором.</p>
+          <p>В течение последних 3 лет я работаю фрилансером, сотрудничая с агентствами и клиентами. Я также являюсь членом команды дизайнеров агентства Point Blank, Design & Drupal Digital.
           </p>
-          <p>Throughout my 11 years' experience I have worked in various advertising agencies as a Graphic /
-            Digital Designer and Art Director.
-          </p>
-          <p>For the last 3 years I have been working as a freelancer collaborating with
-            agencies and clients. I am also a member of the design team of Point Blank, Design & Drupal Digital agency.
-          </p>
-          <p>I am always glad to discuss collaborative projects and freelance commissions.</p>`,
+          <p>Я всегда рада обсудить совместные проекты и заказы по фрилансу.</p>`,
   changeLangLabel: 'en',
   slogan: 'Красота в простоте',
   slogans: [

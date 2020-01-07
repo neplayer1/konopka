@@ -13,7 +13,7 @@ mongoose.connect('mongodb+srv://nepahka:t5cmurcXDyP3JtSKZhSZ5J4q@interiordesign-
 existsSync(path.join(__dirname, "/images")) || mkdirSync(path.join(__dirname, "/images"));
 
 const app = express();
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 5000;
 
 // app.use(cors({
 //   origin: 'http://localhost:3000',
@@ -44,7 +44,11 @@ server.applyMiddleware({ app, cors: false });
 const dbConnection = mongoose.connection;
 dbConnection.on('error', err => console.log(`Connection error: ${err}!`));
 dbConnection.once('open', () => console.log(`Connected to DB!`));
+//
+// app.listen(PORT, err => {
+//   err ? console.warn(error) : console.log(`Server started! listening on port ${PORT}`);
+// })
 
-app.listen(PORT, err => {
-  err ? console.warn(error) : console.log(`Server started! listening on port ${PORT}`);
-})
+app.listen(PORT, function () {
+  console.error(`Node listening on port ${PORT}`);
+});
