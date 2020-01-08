@@ -161,8 +161,8 @@ const Mutation = new GraphQLObjectType({
           images: { type: GraphQLUpload },
         },
         async resolve(parent, { nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, preview, images }) {
-          // console.log("preview", preview)
-          // console.log("images", images)
+          console.log("preview", preview)
+          console.log("images", images)
           const previewUrl = await processUpload(preview);
           const picturesUrl = await processUpload(images);
 
