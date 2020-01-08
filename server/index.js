@@ -8,7 +8,7 @@ const { graphqlUploadExpress } = require('graphql-upload');
 const { existsSync, mkdirSync } = require('fs');
 const { ApolloServer } = require('apollo-server-express');
 
-const connectURI = process.env.MONGOLAB_URI || 'mongodb+srv://nepahka:t5cmurcXDyP3JtSKZhSZ5J4q@interiordesign-9ryld.mongodb.net/interiorsDB?retryWrites=true&w=majority';
+const connectURI = process.env.MONGODB_URI || 'mongodb://nepahka:t5cmurcXDyP3JtSKZhSZ5J4q@interiordesign-9ryld.mongodb.net/interiorsDB?retryWrites=true&w=majority';
 mongoose.connect(connectURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
       const dbConnection = mongoose.connection;
