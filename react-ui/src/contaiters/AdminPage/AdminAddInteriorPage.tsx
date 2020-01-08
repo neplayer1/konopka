@@ -63,10 +63,11 @@ type TProps = {
 export const AdminAddInteriorPage: FC<TProps> = ({history}) => {
   console.log('RENDER ADD_PAGE');
   const {multiFiles} = useContextStrict(UploadMultiFilesContext);
+  console.log(multiFiles)
   const {singleFile} = useContextStrict(UploadSingleFileContext);
   const [addInterior] = useMutation(ADD_INTERIOR, {
     onCompleted: () => {
-      history.push(routes.admin())
+      history.push(routes.adminDashboard())
     }
   });
 
@@ -78,6 +79,7 @@ export const AdminAddInteriorPage: FC<TProps> = ({history}) => {
 
   const handleAdd = useCallback(() => {
     const {nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn} = values;
+    console.log("images", multiFiles);
     const newInterior = {
       variables: {nameRu, typeRu, yearRu, descriptionRu, nameEn, typeEn, yearEn, descriptionEn, preview: singleFile, images: multiFiles},
       refetchQueries: [ { query: GET_ALL_INTERIORS }]
