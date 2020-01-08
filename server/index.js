@@ -19,6 +19,8 @@ mongoose.connect(connectURI, { useNewUrlParser: true, useUnifiedTopology: true }
       console.log('ERROR', err);
     });
 
+console.log(__dirname);
+
 existsSync(path.join(__dirname, "/images")) || mkdirSync(path.join(__dirname, "/images"));
 
 const app = express();
