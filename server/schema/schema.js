@@ -15,7 +15,7 @@ const storeUpload = async (stream) => {
 
   return new Promise((resolve, reject) =>
     stream
-      .pipe(createWriteStream(path.join(__dirname, "images", imgPath)))
+      .pipe(createWriteStream(path.join(__dirname, "../images", imgPath)))
       .on("finish", () => {
         console.log("Uploaded success!")
         return resolve({ imgPath })
@@ -46,7 +46,7 @@ const processUpload = async (upload) => {
 };
 
 const processDelete = async (url) => {
-  await unlink(path.join(__dirname, "images", url), function (error) {
+  await unlink(path.join(__dirname, "../images", url), function (error) {
     if (error) {
       throw error;
     }
