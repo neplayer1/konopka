@@ -63,7 +63,6 @@ type TProps = {
 export const AdminAddInteriorPage: FC<TProps> = ({history}) => {
   console.log('RENDER ADD_PAGE');
   const {multiFiles} = useContextStrict(UploadMultiFilesContext);
-  console.log(multiFiles)
   const {singleFile} = useContextStrict(UploadSingleFileContext);
   const [addInterior] = useMutation(ADD_INTERIOR, {
     onCompleted: () => {

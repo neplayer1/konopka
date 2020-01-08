@@ -17,7 +17,7 @@ const storeUpload = async (stream) => {
     stream
       .pipe(createWriteStream(path.join(__dirname, "../images", imgPath)))
       .on("finish", () => {
-        console.log("Uploaded success!")
+        console.log("Uploaded success!", imgPath);
         return resolve({ imgPath })
       })
       .on("error", reject)

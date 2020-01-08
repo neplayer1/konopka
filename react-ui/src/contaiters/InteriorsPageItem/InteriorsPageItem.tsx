@@ -24,21 +24,24 @@ export const InteriorsPageItem: FC<TProps> = (props) => {
   const {loading: loadingNext, error: errorNext, data: dataNext} = useQuery<T_GET_NEXT_INTERIOR_BY_ID, T_VAR_NEXT_INTERIOR_BY_ID>(GET_NEXT_INTERIOR_BY_ID, {
     variables: {_id: match.params.id}
   });
-  const {interiorById} = data!;
-  const {interiorPrevious} = dataPrev!;
-  const {interiorNext} = dataNext!;
+  const interiorById = null || (data && data.interiorById);
+  // const {interiorById} = data!;
+  const interiorPrevious = null || (dataPrev && dataPrev.interiorPrevious);
+  // const {interiorPrevious} = dataPrev!;
+  const interiorNext = null || (dataNext && dataNext.interiorNext);
+  // const {interiorNext} = dataNext!;
 
   const loaded = !loading && !loadingPrev && !loadingNext;
 
   const handlePrevItem = useCallback(() => {
-    history.push(routes.interiors({id: interiorPrevious._id}));
+    history.push(routes.interiors({id: interiorPrevious!._id}));
   }, [history, interiorPrevious]);
 
   const handleNextItem = useCallback(() => {
-    history.push(routes.interiors({id: interiorNext._id}));
+    history.push(routes.interiors({id: interiorNext!._id}));
   }, [history, interiorNext]);
 
   return <>
-    {loaded && <CatalogPageItem currentItem={interiorById} prevItem={interiorPrevious} nextItem={interiorNext} handlePrevItem={handlePrevItem} handleNextItem={handleNextItem}/>}
+    {loaded && <CatalogPageItem currentItem={interiorById!} prevItem={interiorPrevious!} nextItem={interiorNext!} handlePrevItem={handlePrevItem} handleNextItem={handleNextItem}/>}
   </>
 }

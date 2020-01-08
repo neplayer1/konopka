@@ -64,7 +64,7 @@ export const AdminEditInteriorPage: FC<TProps> = (props) => {
   const interiorById = null || (data && data.interiorById);
   const [updateInterior] = useMutation<TUpdateInterior>(UPDATE_INTERIOR, {
     onCompleted: () => {
-      history.push(routes.admin())
+      history.push(routes.adminDashboard())
     }
   });
   const [initialValues, setInitialValues] = useState<TInteriorEditFormValues>({
