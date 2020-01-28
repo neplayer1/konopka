@@ -34,13 +34,7 @@ const connectDB = async () => {
   }
 };
 
-connectDB().then(() => {
-  const dbConnection = mongoose.connection;
-  dbConnection.on('error', err => console.log(`Connection error: ${err}!`));
-  dbConnection.once('open', () => console.log(`Connected to DB!`));
-});
-
-existsSync(path.join(__dirname, "/images")) || mkdirSync(path.join(__dirname, "/images"));
+connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -60,6 +54,8 @@ app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
 app.get('*', function (request, response) {
   response.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'));
 });
+
+existsSync(path.join(__dirname, "/images")) || mkdirSync(path.join(__dirname, "/images"));
 
 app.use('/images',
   express.static(path.join(__dirname, "/images")),
